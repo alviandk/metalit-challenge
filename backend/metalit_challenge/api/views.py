@@ -35,4 +35,17 @@ class ChallengeTaskView(APIView):
   """
   GET challenge and all of it's tasks
   """
-  pass
+  def get_challenge(self, challenge_id):
+    return Challenge.objects.filter(id=challenge_id)
+
+  def get_task(self, challenge_id):
+    return Task.objects.filter(challenge_id=challenge_id)
+
+  def get(self, request, challenge_id):
+    challenge_query = self.get_challenge(challenge_id)
+    task_query = self.get_task(challenge_id)
+    challenge_serializers = ChallengeSerializer(challenge_query, many=True)
+    task_serializers = TaskSerializer(task_query, many=True)
+    if challenge_query.count() == 0 and task_query.count() == 0:
+      return Response({"description": "challenge ID not found"}, status=status.HTTP_404_NOT_FOUND)
+    return Response({"challenge": challenge_serializers.data, "tasks": task_serializers.data})

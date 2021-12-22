@@ -1,6 +1,6 @@
 from django.db.models import fields
 from rest_framework import serializers
-from .models import Challenge, Task
+from .models import Challenge, Task, TaskVerification
 
 class ChallengeSerializer(serializers.ModelSerializer):
   class Meta:
@@ -10,4 +10,9 @@ class ChallengeSerializer(serializers.ModelSerializer):
 class TaskSerializer(serializers.ModelSerializer):
   class Meta:
     model = Task
+    fields = '__all__'
+
+class TaskVerificationSerializer(serializers.ModelSerializer):
+  class Meta:
+    model = TaskVerification
     fields = '__all__'
