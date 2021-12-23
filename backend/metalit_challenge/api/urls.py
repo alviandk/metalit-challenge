@@ -1,13 +1,14 @@
 from django.urls import path, include
 from rest_framework import routers
-from .views import ChallengeView, TaskView, ChallengeTaskView, TaskVerificationViewSet
-
-router = routers.DefaultRouter()
-router.register(r'task-verification', TaskVerificationViewSet, basename='task-verification')
+from .views import ChallengeView, TaskVerificationView, TaskView, ChallengeTaskView, UnverifiedTaskVerificationView, VerifiedTaskVerificationView
 
 urlpatterns = [
-    path('', include(router.urls)),
     path('challenge', ChallengeView.as_view()),
     path('task/<int:challenge_id>', TaskView.as_view()),
     path('challenge-task/<int:challenge_id>', ChallengeTaskView.as_view()),
+
+    ### Endpoint related to task verification ###
+    path('task-verification', TaskVerificationView.as_view()),
+    path('task-verification/verified', VerifiedTaskVerificationView.as_view()),
+    path('task-verification/unverified', UnverifiedTaskVerificationView.as_view()),
 ]
