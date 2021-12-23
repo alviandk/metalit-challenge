@@ -28,7 +28,7 @@ class TaskView(APIView):
   def get(self, request, challenge_id):
     query = self.get_task(challenge_id)
     serializers = TaskSerializer(query, many=True)
-    if query.count() != 0:
+    if query.exists():
       return Response(serializers.data)
     else:
       return Response({"description": "challenge ID not found"}, status=status.HTTP_404_NOT_FOUND)
@@ -48,7 +48,7 @@ class ChallengeTaskView(APIView):
     task_query = self.get_task(challenge_id)
     challenge_serializers = ChallengeSerializer(challenge_query, many=True)
     task_serializers = TaskSerializer(task_query, many=True)
-    if challenge_query.count() == 0 and task_query.count() == 0:
+    if not challenge_query.exists() and not task_query.exists():
       return Response({"description": "challenge ID not found"}, status=status.HTTP_404_NOT_FOUND)
     return Response({"challenge": challenge_serializers.data, "tasks": task_serializers.data})
 

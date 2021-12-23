@@ -9,5 +9,5 @@ urlpatterns = [
     path('', include(router.urls)),
     path('challenge', ChallengeView.as_view()),
     path('task/<int:challenge_id>', TaskView.as_view()),
-    path('challengetask/<int:challenge_id>', ChallengeTaskView.as_view()),
+    path('challenge-task/<int:challenge_id>', ChallengeTaskView.as_view()),
 ]
