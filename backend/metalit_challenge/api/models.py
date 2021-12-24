@@ -1,3 +1,4 @@
+from django.db.models.constraints import UniqueConstraint
 from django.utils.translation import gettext_lazy as _
 from django.db import models
 
@@ -62,3 +63,53 @@ class TaskVerification(models.Model):
 
   def __str__(self):
     return f"{self.created_at}"
+
+class UserChallenge(models.Model):
+  """
+  Model for user_challenge table in database
+  """
+  #TODO: django only support 1 primary key (?)
+  class Meta:
+    constraints = [
+      UniqueConstraint('challenge', 'user', name='unique_challenge_user')
+    ]
+
+  class Status(models.TextChoices):
+    COMPLETED = 'completed', _('completed')
+    UNCOMPLETED = 'uncompleted', _('uncompleted')
+  challenge = models.ForeignKey(
+    'Challenge',
+    on_delete = models.CASCADE
+  )
+  user = models.ForeignKey(
+    'User',
+    on_delete = models.CASCADE
+  )
+  status = models.CharField(max_length=11, choices=Status.choices, default=Status.UNCOMPLETED, null=False)
+  completed_at = models.DateTimeField(default=None, blank=True, null=True)
+  created_at = models.DateTimeField(auto_now_add=True, null=False)
+
+class UserTask(models.Model):
+  """
+  Model for user_task table in database
+  """
+  #TODO: django only support 1 primary key (?)
+  class Meta:
+    constraints = [
+      UniqueConstraint('task', 'user', name='unique_task_user')
+    ]
+
+  class Status(models.TextChoices):
+    COMPLETED = 'completed', _('completed')
+    UNCOMPLETED = 'uncompleted', _('uncompleted')
+  task = models.ForeignKey(
+    'Task',
+    on_delete = models.CASCADE
+  )
+  user = models.ForeignKey(
+    'User',
+    on_delete = models.CASCADE
+  )
+  status = models.CharField(max_length=11, choices=Status.choices, default=Status.UNCOMPLETED, null=False)
+  completed_at = models.DateTimeField(default=None, blank=True, null=True)
+  created_at = models.DateTimeField(auto_now_add=True, null=False)
