@@ -1,66 +1,55 @@
-from datetime import datetime
-from django.test import TestCase, RequestFactory
 from django.urls import reverse
 import json
-from rest_framework import serializers, status
-from rest_framework.test import APIRequestFactory, APITestCase
+from rest_framework import status
+from rest_framework.test import APITestCase
 
-from .models import Challenge, Task, TaskVerification
-from .serializers import ChallengeSerializer, TaskSerializer, TaskVerificationSerializer
+from api.models import Challenge, Task
+from api.serializers import TaskSerializer
 
-# Create your tests here.
-
-class ChallengeTestCase(APITestCase):
-  def setUp(self):
-    """
-    Setup before the test run
-    """
-    self.register_url =  reverse('challenge')
-    Challenge.objects.create(name="test_challenge",
-                             description="test_description",
-                             status="published",
-                             budget="5000",)
-
-  def test_get_challenge(self):
-    """
-    Test to make sure that the challenge API will work and return status code 200
-    """
-    query = Challenge.objects.all()
-    serializer = ChallengeSerializer(query, many = True)
-
-    response = self.client.get(self.register_url)
-    self.assertEqual(response.status_code, status.HTTP_200_OK)
-    self.assertEqual(json.dumps(response.json()['results']), json.dumps(serializer.data))
-  
-  def test_post_challenge(self):
-    """
-    Test to make sure that the challenge API will not work and return status code 405
-    """
-    response = self.client.post(self.register_url)
-    self.assertEqual(response.status_code, status.HTTP_405_METHOD_NOT_ALLOWED)
-  
-  def test_put_challenge(self):
-    """
-    Test to make sure that the challenge API will not work and return status code 405
-    """
-    response = self.client.put(self.register_url)
-    self.assertEqual(response.status_code, status.HTTP_405_METHOD_NOT_ALLOWED)
 
 class TaskTestCase(APITestCase):
   def setUp(self):
     """
     Setup before the test run
     """
-    pass
-    # self.register_url = reverse('task', kwargs={'challenge_id':1})
-    # Challenge.objects.create(name="test_challenge1",
-    #                          description="test_description1",
-    #                          status="unpublished1",
-    #                          budget=50000,)
-    # Task.objects.create(challenge_id=2,
-    #                     name="task-test1",
-    #                     description="description1",
-    #                     reward_amount=50000,)
+    self.challenge = Challenge.objects.create(name="test_challenge2",
+                             description="test_description2",
+                             status="published",
+                             budget=50000,)
+    self.task = Task.objects.create(challenge=self.challenge,
+                       name="task-test",
+                       description="description",
+                       reward_amount=5000)
+    self.register_url = reverse('task', kwargs={'challenge_id':1})
+
+  def test_get_challenge(self):
+    """
+    Test to make sure that the task API will work and return status code 200
+    """
+    query = Task.objects.get(challenge_id=1)
+    serializer = TaskSerializer(query, many = False)
+
+    response = self.client.get(self.register_url)
+    self.assertEqual(response.status_code, status.HTTP_200_OK)
+    self.assertEqual(json.dumps(response.json()['results'][0]), json.dumps(serializer.data))
+    print("Test GET completed")
+  
+  def test_post_challenge(self):
+    """
+    Test to make sure that the task API will not work and return status code 405
+    """
+    response = self.client.post(self.register_url)
+    self.assertEqual(response.status_code, status.HTTP_405_METHOD_NOT_ALLOWED)
+    print("Test POST completed")
+  
+  def test_put_challenge(self):
+    """
+    Test to make sure that the task API will not work and return status code 405
+    """
+    response = self.client.put(self.register_url)
+    self.assertEqual(response.status_code, status.HTTP_405_METHOD_NOT_ALLOWED)
+    print("Test PUT completed")
+
 
 # class TaskVerificationTestCase(TestCase):
 #   def setUp(self):

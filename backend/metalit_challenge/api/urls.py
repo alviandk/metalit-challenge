@@ -8,7 +8,7 @@ urlpatterns = [
     path('challenge-task/<int:challenge_id>', ChallengeTaskView.as_view()),
 
     ### Endpoint related to task verification ###
-    path('task-verification', TaskVerificationView.as_view()),
+    path('task-verification', TaskVerificationView.as_view(), name="task_verification"),
     path('task-verification/verified', VerifiedTaskVerificationView.as_view()),
     path('task-verification/unverified', UnverifiedTaskVerificationView.as_view()),
 ]
