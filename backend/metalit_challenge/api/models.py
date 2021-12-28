@@ -41,6 +41,9 @@ class User(models.Model):
   """
   name = models.CharField(max_length=255, null=False)
 
+  def __str__(self):
+    return f"{self.name}"
+
 class TaskVerification(models.Model):
   """
   Model for task_verification table in database
@@ -89,6 +92,9 @@ class UserChallenge(models.Model):
   completed_at = models.DateTimeField(default=None, blank=True, null=True)
   created_at = models.DateTimeField(auto_now_add=True, null=False)
 
+  def __str__(self):
+    return f"Name: {self.user} - Challenge: {self.challenge}"
+
 class UserTask(models.Model):
   """
   Model for user_task table in database
@@ -113,3 +119,6 @@ class UserTask(models.Model):
   status = models.CharField(max_length=11, choices=Status.choices, default=Status.UNCOMPLETED, null=False)
   completed_at = models.DateTimeField(default=None, blank=True, null=True)
   created_at = models.DateTimeField(auto_now_add=True, null=False)
+
+  def __str__(self):
+    return f"Name: {self.user} - Task: {self.task}"

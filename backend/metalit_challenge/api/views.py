@@ -1,11 +1,18 @@
+from django.http import Http404
 from django.shortcuts import get_list_or_404
-from rest_framework import serializers, status
-from rest_framework.generics import ListAPIView, ListCreateAPIView
-from rest_framework.views import APIView
+from rest_framework import mixins, pagination, serializers, status
+from rest_framework.generics import (GenericAPIView, ListAPIView,
+                                     ListCreateAPIView, RetrieveUpdateAPIView,
+                                     UpdateAPIView)
 from rest_framework.pagination import PageNumberPagination
 from rest_framework.response import Response
-from .models import Challenge, Task, TaskVerification
-from .serializers import ChallengeSerializer, TaskSerializer, TaskVerificationSerializer
+from rest_framework.views import APIView
+
+from .models import (Challenge, Task, TaskVerification, User, UserChallenge,
+                     UserTask)
+from .serializers import (ChallengeSerializer, TaskSerializer,
+                          TaskVerificationSerializer, UserChallengeSerializer,
+                          UserTaskSerializer)
 
 # Create your views here.
 
@@ -62,7 +69,7 @@ class ChallengeTaskView(APIView):
 
 class TaskVerificationView(ListCreateAPIView):
   """
-  GET all data from task verification table
+  GET and POST all data from task verification table
   """
   queryset = TaskVerification.objects.all().order_by('id')
   serializer_class = TaskVerificationSerializer
@@ -97,3 +104,94 @@ class UnverifiedTaskVerificationView(ListAPIView):
   queryset = TaskVerification.objects.filter(is_verified=False).order_by('id')
   serializer_class = TaskVerificationSerializer
   pagination_class = PageNumberPagination
+
+### USER CHALLENGE ###
+
+class UserChallengeIndividualView(RetrieveUpdateAPIView):
+  """
+  GET and PATCH invidual data from user challenge table by user id and challenge id
+  """
+  serializer_class = UserChallengeSerializer
+  pagination_class = PageNumberPagination
+  lookup_field = 'user_id'
+
+  def get_queryset(self):
+    challenge_id = self.request.query_params.get('challenge')
+    queryset = UserChallenge.objects.filter(challenge_id=challenge_id)
+    return queryset
+
+class UserChallengeListView(ListAPIView):
+  """
+  GET all challenge by user id
+  """
+  queryset = UserChallenge.objects.all()
+  serializer_class = UserChallengeSerializer
+  pagination_class = PageNumberPagination
+  lookup_field = 'user_id'
+
+### USER TASK ###
+
+class UserTaskListView(ListAPIView):
+  """
+  GET all task by challenge id and user id
+  """
+  serializer_class = UserTaskSerializer
+  pagination_class = PageNumberPagination
+
+  def get_queryset(self):
+    """
+    Override default queryset method on ListAPIView
+    """
+    query = UserTask.objects.filter(
+      user_id = self.kwargs['user_id'],
+      task__challenge__id = self.kwargs['challenge_id']
+    ).order_by('id')
+
+    #Check if task in the challenge
+
+    obj = get_list_or_404(query)
+    return obj
+
+class UserTaskListCompletedView(ListAPIView):
+  """
+  GET all completed task by challenge id and user id
+  """
+  serializer_class = UserTaskSerializer
+  pagination_class = PageNumberPagination
+
+  def get_queryset(self):
+    """
+    Override default queryset method on ListAPIView
+    """
+    query = UserTask.objects.filter(
+      user_id = self.kwargs['user_id'],
+      status = 'completed',
+      task__challenge__id = self.kwargs['challenge_id']
+    ).order_by('id')
+
+    #Check if task in the challenge
+
+    obj = get_list_or_404(query)
+    return obj
+
+class UserTaskListUncompletedView(ListAPIView):
+  """
+  GET all uncompleted tak by challenge id and user id
+  """
+  serializer_class = UserTaskSerializer
+  pagination_class = PageNumberPagination
+
+  def get_queryset(self):
+    """
+    Override default queryset method on ListAPIView
+    """
+    query = UserTask.objects.filter(
+      user_id = self.kwargs['user_id'],
+      status = 'uncompleted',
+      task__challenge__id = self.kwargs['challenge_id']
+    ).order_by('id')
+
+    #Check if task in the challenge
+
+    obj = get_list_or_404(query)
+    return obj
