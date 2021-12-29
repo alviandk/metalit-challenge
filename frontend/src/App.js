@@ -1,5 +1,5 @@
-import Progress from "./container/ProgressChallenge";
-import List from "./container/ListChallenge";
+import Task from "./container/Task";
+import Challenge from "./container/Challenge";
 import { BrowserRouter as Router, Switch, Route} from "react-router-dom";
 import Navig from "./components/Navbar";
 import Footer from "./components/Footer";
@@ -11,8 +11,8 @@ function App() {
       <div className="App">
       	<Navig />
         <Switch>
-          <Route path="" component={List} exact />
-          <Route path="/progress" component={Progress} exact />
+          <Route path="/" component={Challenge} exact />
+          <Route path="/task" component={Task} exact />
         </Switch>
         <Footer />
       </div>

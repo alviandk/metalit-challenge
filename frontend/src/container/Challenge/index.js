@@ -1,7 +1,7 @@
 import React from "react";
 import "../../index.css";
 
-const List = () => {
+const Challenge = () => {
 	return (
         <section class="py-5 bg-light">
             <div class="container">
@@ -93,4 +93,4 @@ const List = () => {
     );
   };
 
-export default List
+export default Challenge
