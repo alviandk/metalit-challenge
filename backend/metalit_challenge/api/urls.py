@@ -1,6 +1,6 @@
 from django.urls import path, include
 from rest_framework import routers
-from .views import ChallengeView, TaskVerificationView, TaskView, ChallengeTaskView, UnverifiedTaskVerificationView, UserChallengeIndividualView, UserChallengeListView, UserTaskListCompletedView, UserTaskListUncompletedView, UserTaskListView, VerifiedTaskVerificationView
+from .views import ChallengeView, GenerateJWTMockup, TaskVerificationView, TaskView, ChallengeTaskView, UnverifiedTaskVerificationView, UserChallengeIndividualView, UserChallengeListView, UserTaskListCompletedView, UserTaskListUncompletedView, UserTaskListView, VerifiedTaskVerificationView
 
 urlpatterns = [
     path('challenge', ChallengeView.as_view()),
@@ -20,4 +20,7 @@ urlpatterns = [
     path('user-task/<int:user_id>/challenge:<int:challenge_id>', UserTaskListView.as_view()),
     path('user-task/<int:user_id>/challenge:<int:challenge_id>/completed', UserTaskListCompletedView.as_view()),
     path('user-task/<int:user_id>/challenge:<int:challenge_id>/uncompleted', UserTaskListUncompletedView.as_view()),
+
+    ### Endpoint to generate JWT token mockup
+    path('auth/generate-token', GenerateJWTMockup.as_view()),
 ]

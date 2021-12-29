@@ -8,11 +8,20 @@ from rest_framework.pagination import PageNumberPagination
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
+from .auth import UserAuthentication
+
 from .models import (Challenge, Task, TaskVerification, User, UserChallenge,
                      UserTask)
 from .serializers import (ChallengeSerializer, TaskSerializer,
-                          TaskVerificationSerializer, UserChallengeSerializer,
+                          TaskVerificationSerializer, UserChallengeSerializer, UserSerializer,
                           UserTaskSerializer)
+
+# JWT mockup import
+import jwt
+from environs import Env
+
+env = Env()
+env.read_env()
 
 # Create your views here.
 
@@ -195,3 +204,18 @@ class UserTaskListUncompletedView(ListAPIView):
 
     obj = get_list_or_404(query)
     return obj
+
+class GenerateJWTMockup(APIView):
+  """
+  Mockup API to generate JWT token
+  """
+  authentication_classes = (UserAuthentication,)
+  def get(self, request):
+    # Mockup query
+    query = User.objects.get(id=1)
+    serializer = UserSerializer(query, many=False)
+    # JWT encode process
+    key = env('JWT_SECRET_KEY')
+    token = jwt.encode(serializer.data, key, algorithm="HS256")
+
+    return Response({"data_from_query": serializer.data, "token": token}, status=status.HTTP_200_OK)
