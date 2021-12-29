@@ -1,24 +1,35 @@
-from django.contrib import auth
+import datetime
+
 import jwt
-from environs import Env
+from django.conf import settings
+from django.contrib import auth
 from rest_framework import exceptions
 from rest_framework.authentication import BaseAuthentication
 
+from .serializers import UserSerializer
+
 from .models import User
 
-env = Env()
-env.read_env()
+key = settings.JWT_SECRET_KEY
 
-key = env('JWT_SECRET_KEY')
+class TokenHandler:
+  @staticmethod
+  def token_encode(data:UserSerializer, exp_time:int):
+    encoded_data = {'exp': datetime.datetime.now(tz=datetime.timezone.utc) + datetime.timedelta(hours=exp_time)}
+    encoded_data.update(data)
+    return encoded_data, jwt.encode(encoded_data, key, algorithm="HS256")
 
-class TokenHandler():
   @staticmethod
   def token_decode(auth_header:str=None):
     """
     Split value from Authorization header and decode them
     """
     jwt_token = auth_header.split()[1]
-    return jwt.decode(jwt_token, key, algorithms="HS256")
+    try:
+      decoded_token = jwt.decode(jwt_token, key, algorithms="HS256")
+      return decoded_token
+    except:
+      return None
 
 class UserAuthentication(BaseAuthentication):
   """
@@ -27,6 +38,12 @@ class UserAuthentication(BaseAuthentication):
   def authenticate(self, request):
     auth_header = request.META.get('HTTP_AUTHORIZATION')
     if not auth_header:
+      print('auth header None')
+      # if auth_header not specified then user are not trying to authenticate
       return None
     jwt_payload = TokenHandler.token_decode(auth_header)
-    return (jwt_payload['id'], None)
+    if not jwt_payload:
+      # an error occured in jwt decoding process
+      raise exceptions.AuthenticationFailed('JWT token expired/invalid')
+    user_id_query = User.objects.get_or_create(id=jwt_payload['id'])
+    return (user_id_query, None)

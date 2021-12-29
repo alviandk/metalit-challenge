@@ -1,6 +1,6 @@
 from django.http import Http404
 from django.shortcuts import get_list_or_404
-from rest_framework import mixins, pagination, serializers, status
+from rest_framework import authentication, mixins, pagination, serializers, status
 from rest_framework.generics import (GenericAPIView, ListAPIView,
                                      ListCreateAPIView, RetrieveUpdateAPIView,
                                      UpdateAPIView)
@@ -17,11 +17,10 @@ from .serializers import (ChallengeSerializer, TaskSerializer,
                           UserTaskSerializer)
 
 # JWT mockup import
+import datetime
 import jwt
-from environs import Env
-
-env = Env()
-env.read_env()
+from django.conf import settings
+from .auth import TokenHandler
 
 # Create your views here.
 
@@ -209,13 +208,21 @@ class GenerateJWTMockup(APIView):
   """
   Mockup API to generate JWT token
   """
-  authentication_classes = (UserAuthentication,)
   def get(self, request):
     # Mockup query
     query = User.objects.get(id=1)
     serializer = UserSerializer(query, many=False)
-    # JWT encode process
-    key = env('JWT_SECRET_KEY')
-    token = jwt.encode(serializer.data, key, algorithm="HS256")
 
-    return Response({"data_from_query": serializer.data, "token": token}, status=status.HTTP_200_OK)
+    # JWT encode process
+    encoded_data, token = TokenHandler.token_encode(serializer.data, 24)
+
+    return Response({"data_from_query": encoded_data, "token": token}, status=status.HTTP_200_OK)
+
+class TestJWTResponse(APIView):
+  """
+  Mockup API to test JWT token generated
+  """
+  authentication_classes = (UserAuthentication,)
+  def get(self, request):
+    # if authorization header is specified and jwt token is valid
+    return Response({"message": "testing JWT success"})

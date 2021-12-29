@@ -48,7 +48,7 @@ INSTALLED_APPS = [
 
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
-       'api.auth.UserAuthentication' 
+       'api.auth.UserAuthentication',
     ),
     'DEFAULT_PAGINATION_CLASS' : 'rest_framework.pagination.PageNumberPagination',
     'PAGE_SIZE': 1,
@@ -144,3 +144,5 @@ STATIC_URL = 'static/'
 # https://docs.djangoproject.com/en/4.0/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+JWT_SECRET_KEY = env('JWT_SECRET_KEY')
