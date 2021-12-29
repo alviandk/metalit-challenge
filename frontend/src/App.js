@@ -1,5 +1,5 @@
-import Coba from "./container/ProgressChallenge";
-import Progress from "./components/Coba";
+import Progress from "./container/ProgressChallenge";
+import List from "./container/ListChallenge";
 import { BrowserRouter as Router, Switch, Route} from "react-router-dom";
 import Navig from "./components/Navbar";
 import Footer from "./components/Footer";
@@ -11,8 +11,8 @@ function App() {
       <div className="App">
       	<Navig />
         <Switch>
-          <Route path="/" component={Coba} exact />
-          <Route path="/a" component={Progress} exact />
+          <Route path="" component={List} exact />
+          <Route path="/progress" component={Progress} exact />
         </Switch>
         <Footer />
       </div>

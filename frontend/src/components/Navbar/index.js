@@ -6,7 +6,7 @@ import "../../index.css";
 
 const Navig = () => {
   return (
-    <Navbar collapseOnSelect expand="sm" className="navbar navbar-expand-lg navbar-light mb-3">
+    <Navbar collapseOnSelect expand="sm" className="navbar navbar-expand-lg navbar-light">
       <div className="container">
         <Navbar.Brand>
           <a href={Home}>
