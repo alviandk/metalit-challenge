@@ -38,9 +38,8 @@ class UserAuthentication(BaseAuthentication):
   def authenticate(self, request):
     auth_header = request.META.get('HTTP_AUTHORIZATION')
     if not auth_header:
-      print('auth header None')
-      # if auth_header not specified then user are not trying to authenticate
-      return None
+      # the authorization header is empty
+      raise exceptions.AuthenticationFailed('Auth header is empty')
     jwt_payload = TokenHandler.token_decode(auth_header)
     if not jwt_payload:
       # an error occured in jwt decoding process

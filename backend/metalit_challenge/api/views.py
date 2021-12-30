@@ -1,4 +1,4 @@
-from django.http import Http404
+from django.http import Http404, request
 from django.shortcuts import get_list_or_404
 from rest_framework import authentication, mixins, pagination, serializers, status
 from rest_framework.generics import (GenericAPIView, ListAPIView,
@@ -143,6 +143,7 @@ class UserTaskListView(ListAPIView):
   """
   GET all task by challenge id and user id
   """
+  authentication_classes = [UserAuthentication]
   serializer_class = UserTaskSerializer
   pagination_class = PageNumberPagination
 
@@ -150,8 +151,14 @@ class UserTaskListView(ListAPIView):
     """
     Override default queryset method on ListAPIView
     """
+
+    # Get uid from authentication method
+    user_obj = self.request.user[0]
+    serializer = UserSerializer(user_obj, many=False)
+    uid = serializer.data['id']
+
     query = UserTask.objects.filter(
-      user_id = self.kwargs['user_id'],
+      user_id = uid,
       task__challenge__id = self.kwargs['challenge_id']
     ).order_by('id')
 
@@ -164,6 +171,7 @@ class UserTaskListCompletedView(ListAPIView):
   """
   GET all completed task by challenge id and user id
   """
+  authentication_classes = [UserAuthentication]
   serializer_class = UserTaskSerializer
   pagination_class = PageNumberPagination
 
@@ -171,8 +179,14 @@ class UserTaskListCompletedView(ListAPIView):
     """
     Override default queryset method on ListAPIView
     """
+
+    # Get uid from authentication method
+    user_obj = self.request.user[0]
+    serializer = UserSerializer(user_obj, many=False)
+    uid = serializer.data['id']
+
     query = UserTask.objects.filter(
-      user_id = self.kwargs['user_id'],
+      user_id = uid,
       status = 'completed',
       task__challenge__id = self.kwargs['challenge_id']
     ).order_by('id')
@@ -186,6 +200,7 @@ class UserTaskListUncompletedView(ListAPIView):
   """
   GET all uncompleted tak by challenge id and user id
   """
+  authentication_classes = [UserAuthentication]
   serializer_class = UserTaskSerializer
   pagination_class = PageNumberPagination
 
@@ -193,8 +208,14 @@ class UserTaskListUncompletedView(ListAPIView):
     """
     Override default queryset method on ListAPIView
     """
+
+    # Get uid from authentication method
+    user_obj = self.request.user[0]
+    serializer = UserSerializer(user_obj, many=False)
+    uid = serializer.data['id']
+
     query = UserTask.objects.filter(
-      user_id = self.kwargs['user_id'],
+      user_id = uid,
       status = 'uncompleted',
       task__challenge__id = self.kwargs['challenge_id']
     ).order_by('id')
@@ -208,9 +229,9 @@ class GenerateJWTMockup(APIView):
   """
   Mockup API to generate JWT token
   """
-  def get(self, request):
+  def get(self, request, *args, **kwargs):
     # Mockup query
-    query = User.objects.get(id=1)
+    query = User.objects.get(id=kwargs.get('user_id'))
     serializer = UserSerializer(query, many=False)
 
     # JWT encode process
@@ -222,7 +243,7 @@ class TestJWTResponse(APIView):
   """
   Mockup API to test JWT token generated
   """
-  authentication_classes = (UserAuthentication,)
+  authentication_classes = [UserAuthentication]
   def get(self, request):
     # if authorization header is specified and jwt token is valid
     return Response({"message": "testing JWT success"})
