@@ -146,3 +146,5 @@ STATIC_URL = 'static/'
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 JWT_SECRET_KEY = env('JWT_SECRET_KEY')
+
+DEV_MODE = env('DEV_MODE')
