@@ -1,3 +1,4 @@
+from django.contrib import settings
 from django.urls import path, include
 from rest_framework import routers
 from .views import ChallengeView, GenerateJWTMockup, TaskVerificationView, TaskView, ChallengeTaskView, TestJWTResponse, UnverifiedTaskVerificationView, UserChallengeIndividualView, UserChallengeListView, UserTaskListCompletedView, UserTaskListUncompletedView, UserTaskListView, VerifiedTaskVerificationView
@@ -21,7 +22,15 @@ urlpatterns = [
     path('user-task/<int:user_id>/challenge:<int:challenge_id>/completed', UserTaskListCompletedView.as_view()),
     path('user-task/<int:user_id>/challenge:<int:challenge_id>/uncompleted', UserTaskListUncompletedView.as_view()),
 
-    ### Endpoint to generate JWT token mockup
-    path('auth/generate-token', GenerateJWTMockup.as_view()),
-    path('auth/test-token', TestJWTResponse.as_view()),
 ]
+
+"""
+Additional API for dev mode
+"""
+if settings.DEV_MODE:
+    # if dev mode is set to true in env var, add this additional endpoint
+    urlpatterns += [
+        ### Endpoint to generate JWT token mockup
+        path('auth/generate-token', GenerateJWTMockup.as_view()),
+        path('auth/test-token', TestJWTResponse.as_view()),
+    ]
