@@ -12,7 +12,7 @@ function App() {
       	<Navig />
         <Switch>
           <Route path="/" component={Challenge} exact />
-          <Route path="/task" component={Task} exact />
+          <Route path="/task/:id" component={Task} exact />
         </Switch>
         <Footer />
       </div>
