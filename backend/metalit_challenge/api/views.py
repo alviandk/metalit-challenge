@@ -1,12 +1,14 @@
 from django.http import Http404, request
 from django.shortcuts import get_list_or_404
-from rest_framework import authentication, mixins, pagination, serializers, status
+from rest_framework import authentication, mixins, pagination, permissions, serializers, status
 from rest_framework.generics import (GenericAPIView, ListAPIView,
                                      ListCreateAPIView, RetrieveUpdateAPIView,
                                      UpdateAPIView)
 from rest_framework.pagination import PageNumberPagination
 from rest_framework.response import Response
 from rest_framework.views import APIView
+
+from .permissions import IsOwnerObjectPermission
 
 from .auth import UserAuthentication
 
@@ -17,8 +19,6 @@ from .serializers import (ChallengeSerializer, TaskSerializer,
                           UserTaskSerializer)
 
 # JWT mockup import
-import datetime
-import jwt
 from django.conf import settings
 from .auth import TokenHandler
 
@@ -119,23 +119,45 @@ class UserChallengeIndividualView(RetrieveUpdateAPIView):
   """
   GET and PATCH invidual data from user challenge table by user id and challenge id
   """
+  authentication_classes = [UserAuthentication]
+  permission_classes = [IsOwnerObjectPermission]
+
   serializer_class = UserChallengeSerializer
   pagination_class = PageNumberPagination
-  lookup_field = 'user_id'
+  lookup_field = 'challenge_id'
 
   def get_queryset(self):
-    challenge_id = self.request.query_params.get('challenge')
-    queryset = UserChallenge.objects.filter(challenge_id=challenge_id)
+    uid = self.request.user[0].id
+    queryset = UserChallenge.objects.filter(user_id=uid)
     return queryset
 
 class UserChallengeListView(ListAPIView):
   """
   GET all challenge by user id
   """
-  queryset = UserChallenge.objects.all()
+  authentication_classes = [UserAuthentication]
+
+  # queryset = UserChallenge.objects.all()
   serializer_class = UserChallengeSerializer
   pagination_class = PageNumberPagination
-  lookup_field = 'user_id'
+  # lookup_field = 'user_id'
+
+  def get_queryset(self):
+    """"
+    Override default queryset method on ListAPIView
+    """
+
+    # Get uid from authentication method
+    uid = self.request.user[0].id
+
+    query = UserChallenge.objects.filter(
+      user_id = uid
+    ).order_by('id')
+
+    # Check if challenge exist
+
+    obj = get_list_or_404(query)
+    return obj
 
 ### USER TASK ###
 
@@ -144,6 +166,7 @@ class UserTaskListView(ListAPIView):
   GET all task by challenge id and user id
   """
   authentication_classes = [UserAuthentication]
+
   serializer_class = UserTaskSerializer
   pagination_class = PageNumberPagination
 
@@ -153,9 +176,7 @@ class UserTaskListView(ListAPIView):
     """
 
     # Get uid from authentication method
-    user_obj = self.request.user[0]
-    serializer = UserSerializer(user_obj, many=False)
-    uid = serializer.data['id']
+    uid = self.request.user[0].id
 
     query = UserTask.objects.filter(
       user_id = uid,
@@ -172,6 +193,7 @@ class UserTaskListCompletedView(ListAPIView):
   GET all completed task by challenge id and user id
   """
   authentication_classes = [UserAuthentication]
+
   serializer_class = UserTaskSerializer
   pagination_class = PageNumberPagination
 
@@ -181,9 +203,7 @@ class UserTaskListCompletedView(ListAPIView):
     """
 
     # Get uid from authentication method
-    user_obj = self.request.user[0]
-    serializer = UserSerializer(user_obj, many=False)
-    uid = serializer.data['id']
+    uid = self.request.user[0].id
 
     query = UserTask.objects.filter(
       user_id = uid,
@@ -201,6 +221,7 @@ class UserTaskListUncompletedView(ListAPIView):
   GET all uncompleted tak by challenge id and user id
   """
   authentication_classes = [UserAuthentication]
+
   serializer_class = UserTaskSerializer
   pagination_class = PageNumberPagination
 
@@ -210,9 +231,7 @@ class UserTaskListUncompletedView(ListAPIView):
     """
 
     # Get uid from authentication method
-    user_obj = self.request.user[0]
-    serializer = UserSerializer(user_obj, many=False)
-    uid = serializer.data['id']
+    uid = self.request.user[0].id
 
     query = UserTask.objects.filter(
       user_id = uid,

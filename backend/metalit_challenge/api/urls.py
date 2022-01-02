@@ -14,13 +14,13 @@ urlpatterns = [
     path('task-verification/unverified', UnverifiedTaskVerificationView.as_view()),
 
     ### Endpoint related to user challenge ###
-    path('user-challenge/<int:user_id>', UserChallengeIndividualView.as_view()),
-    path('user-challenge/all/<int:user_id>', UserChallengeListView.as_view()),
+    path('user-challenge/challenge:<int:challenge_id>', UserChallengeIndividualView.as_view()), #Auth, Perm
+    path('user-challenge/all', UserChallengeListView.as_view()), #Auth
 
     ### Endpoint related to user task ###
-    path('user-task/challenge:<int:challenge_id>', UserTaskListView.as_view()),
-    path('user-task/challenge:<int:challenge_id>/completed', UserTaskListCompletedView.as_view()),
-    path('user-task/challenge:<int:challenge_id>/uncompleted', UserTaskListUncompletedView.as_view()),
+    path('user-task/challenge:<int:challenge_id>', UserTaskListView.as_view()), #Auth
+    path('user-task/challenge:<int:challenge_id>/completed', UserTaskListCompletedView.as_view()), #Auth
+    path('user-task/challenge:<int:challenge_id>/uncompleted', UserTaskListUncompletedView.as_view()), #Auth
 
 ]
 
