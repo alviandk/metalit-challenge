@@ -5,9 +5,6 @@ import { Link } from "react-router-dom";
 
 class Challenge extends Component{
     state={
-        count:null,
-        next:null,
-        previous:null,
         results:[]
     }
 
@@ -15,9 +12,6 @@ class Challenge extends Component{
         Axios.get('http://127.0.0.1:8000/api/challenge?page=1').then(response=>{
             this.setState({
                 results:response.data.results,
-                count:response.data.count,
-                next:response.data.next,
-                previous:response.data.previous
             })
         })
     }
