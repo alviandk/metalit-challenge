@@ -55,7 +55,7 @@ class Footer extends Component {
             <div className="row">
               <div className="col-md-12 px-2">
                 <p className="text-center px-3">
-                  All Rights Reserved | Copyright © 2021 | PT Metamorfosa Teknologi Berdikari
+                  All Rights Reserved | Copyright © 2022 | PT Metamorfosa Teknologi Berdikari
                 </p>
                 <div className="text-center">
                   <span className="mx-2">

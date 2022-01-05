@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import Axios from 'axios';
-import "../../index.css";
 import { Link } from "react-router-dom";
 
 class Challenge extends Component{
@@ -9,7 +8,7 @@ class Challenge extends Component{
     }
 
     componentDidMount(){
-        Axios.get('http://127.0.0.1:8000/api/challenge?page=1').then(response=>{
+        Axios.get('http://127.0.0.1:8001/api/challenge?page=1').then(response=>{
             this.setState({
                 results:response.data.results,
             })
@@ -21,7 +20,7 @@ class Challenge extends Component{
             <div class="container">
                 <div class="row text-center mb-5">
                     <div class="col-lg-8 mx-auto">
-                        <h1 class="display-4">Metalit Challenge</h1>
+                        <h1 class="display-4 text-white">Metalit Challenge</h1>
                     </div>
                 </div>
 

@@ -2,8 +2,8 @@
   width: 50%;
 }
 
-.bgabu {
-    background-color: #eee
+section.py-5, .row.text-center.mb-5 {
+    background-color: #0f5da9;
 }
 
 .card {
