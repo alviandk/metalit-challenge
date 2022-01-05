@@ -1,7 +1,13 @@
 from django.conf import settings
-from django.urls import path, include
+from django.urls import include, path
 from rest_framework import routers
-from .views import ChallengeView, GenerateJWTMockup, TaskVerificationView, TaskView, ChallengeTaskView, TestJWTResponse, UnverifiedTaskVerificationView, UserChallengeIndividualView, UserChallengeListView, UserTaskListCompletedView, UserTaskListUncompletedView, UserTaskListView, VerifiedTaskVerificationView
+
+from .views import (ChallengeTaskView, ChallengeView, CreateUserTaskView, GenerateJWTMockup, CreateUserChallengeView,
+                    TaskVerificationView, TaskView, TestJWTResponse,
+                    UnverifiedTaskVerificationView,
+                    UserChallengeIndividualView, UserChallengeListView,
+                    UserTaskListCompletedView, UserTaskListUncompletedView,
+                    UserTaskListView, VerifiedTaskVerificationView)
 
 urlpatterns = [
     path('challenge', ChallengeView.as_view()),
@@ -16,11 +22,13 @@ urlpatterns = [
     ### Endpoint related to user challenge ###
     path('user-challenge/challenge:<int:challenge_id>', UserChallengeIndividualView.as_view()), #Auth, Perm
     path('user-challenge/all', UserChallengeListView.as_view()), #Auth
+    path('user-challenge/create', CreateUserChallengeView.as_view()),
 
     ### Endpoint related to user task ###
     path('user-task/challenge:<int:challenge_id>', UserTaskListView.as_view()), #Auth
     path('user-task/challenge:<int:challenge_id>/completed', UserTaskListCompletedView.as_view()), #Auth
     path('user-task/challenge:<int:challenge_id>/uncompleted', UserTaskListUncompletedView.as_view()), #Auth
+    path('user-task/create', CreateUserTaskView.as_view()),
 
 ]
 

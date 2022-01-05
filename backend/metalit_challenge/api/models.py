@@ -6,6 +6,9 @@ class Challenge(models.Model):
     """
     Model for challenge table in database
     """
+    class Meta:
+      ordering = ['-created_at']
+
     class Status(models.TextChoices):
       PUBLISHED = 'published', _('published')
       UNPUBLISHED = 'unpublished', _('unpublished')
@@ -23,6 +26,9 @@ class Task(models.Model):
   """
   Model for task table in database
   """
+  class Meta:
+    ordering = ['-created_at']
+
   challenge = models.ForeignKey(
     'Challenge', 
     on_delete = models.CASCADE,
@@ -39,6 +45,9 @@ class User(models.Model):
   """
   Model for user mockup
   """
+  class Meta:
+    ordering = ['id']
+
   name = models.CharField(max_length=255, null=False)
 
   def __str__(self):
@@ -48,6 +57,9 @@ class TaskVerification(models.Model):
   """
   Model for task_verification table in database
   """
+  class Meta:
+    ordering = ['-created_at']
+
   class Status(models.TextChoices):
       TRUE = 'true', _('true')
       FALSE = 'false', _('false')
@@ -76,6 +88,7 @@ class UserChallenge(models.Model):
     constraints = [
       UniqueConstraint('challenge', 'user', name='unique_challenge_user')
     ]
+    ordering = ['-created_at']
 
   class Status(models.TextChoices):
     COMPLETED = 'completed', _('completed')
@@ -104,6 +117,7 @@ class UserTask(models.Model):
     constraints = [
       UniqueConstraint('task', 'user', name='unique_task_user')
     ]
+    ordering = ['-created_at']
 
   class Status(models.TextChoices):
     COMPLETED = 'completed', _('completed')

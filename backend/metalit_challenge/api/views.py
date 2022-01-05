@@ -1,7 +1,9 @@
-from django.http import Http404, request
-from django.shortcuts import get_list_or_404
-from rest_framework import authentication, mixins, pagination, permissions, serializers, status
-from rest_framework.generics import (GenericAPIView, ListAPIView,
+from django.core.exceptions import ObjectDoesNotExist
+from django.db import IntegrityError
+from django.db.models.base import Model
+from django.shortcuts import get_list_or_404, get_object_or_404
+from rest_framework import serializers, status
+from rest_framework.generics import (CreateAPIView, GenericAPIView, ListAPIView,
                                      ListCreateAPIView, RetrieveUpdateAPIView,
                                      UpdateAPIView)
 from rest_framework.pagination import PageNumberPagination
@@ -49,7 +51,7 @@ class TaskView(ListAPIView):
     """
     query = Task.objects.filter(
       challenge_id = self.kwargs['challenge_id']
-    ).order_by('id')
+    )
     obj = get_list_or_404(query)
     return obj
 
@@ -79,7 +81,7 @@ class TaskVerificationView(ListCreateAPIView):
   """
   GET and POST all data from task verification table
   """
-  queryset = TaskVerification.objects.all().order_by('id')
+  queryset = TaskVerification.objects.all()
   serializer_class = TaskVerificationSerializer
   pagination_class = PageNumberPagination
 
@@ -101,7 +103,7 @@ class VerifiedTaskVerificationView(ListAPIView):
   """
   GET all verified task
   """
-  queryset = TaskVerification.objects.filter(is_verified=True).order_by('id')
+  queryset = TaskVerification.objects.filter(is_verified=True)
   serializer_class = TaskVerificationSerializer
   pagination_class = PageNumberPagination
 
@@ -109,7 +111,7 @@ class UnverifiedTaskVerificationView(ListAPIView):
   """
   GET all unverified task
   """
-  queryset = TaskVerification.objects.filter(is_verified=False).order_by('id')
+  queryset = TaskVerification.objects.filter(is_verified=False)
   serializer_class = TaskVerificationSerializer
   pagination_class = PageNumberPagination
 
@@ -152,12 +154,44 @@ class UserChallengeListView(ListAPIView):
 
     query = UserChallenge.objects.filter(
       user_id = uid
-    ).order_by('id')
+    )
 
     # Check if challenge exist
 
     obj = get_list_or_404(query)
     return obj
+
+class CreateUserChallengeView(CreateAPIView):
+  """
+  POST data to user challenge table
+  """
+  authentication_classes = [UserAuthentication]
+
+  queryset = UserChallenge.objects.all()
+  serializer_class = UserChallengeSerializer
+
+  def create(self, request, *args, **kwargs):
+    """
+    Override create method to validate that only published challenge are allowed to be enrolled
+    """
+    try:
+      data_serializer = self.get_serializer(data=request.data)
+
+      #check if request body contains invalid input
+      if data_serializer.is_valid(raise_exception=True):
+        challenge = Challenge.objects.get(id=data_serializer.validated_data.get('challenge').id)
+        if challenge.status == 'published':
+          self.perform_create(data_serializer)
+          headers = self.get_success_headers(data_serializer.data)
+          return Response(data_serializer.data, status=status.HTTP_201_CREATED, headers=headers)
+        else:
+          return Response({"detail": "challenge is not published"}, status=status.HTTP_400_BAD_REQUEST)
+
+    except IntegrityError:
+      return Response({"detail": "user already enrolled in the challenge"}, status=status.HTTP_400_BAD_REQUEST)
+
+    except Exception as e:
+      return Response({"detail": "challenge enrollment failed"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 ### USER TASK ###
 
@@ -181,7 +215,7 @@ class UserTaskListView(ListAPIView):
     query = UserTask.objects.filter(
       user_id = uid,
       task__challenge__id = self.kwargs['challenge_id']
-    ).order_by('id')
+    )
 
     #Check if task in the challenge
 
@@ -209,7 +243,7 @@ class UserTaskListCompletedView(ListAPIView):
       user_id = uid,
       status = 'completed',
       task__challenge__id = self.kwargs['challenge_id']
-    ).order_by('id')
+    )
 
     #Check if task in the challenge
 
@@ -237,12 +271,47 @@ class UserTaskListUncompletedView(ListAPIView):
       user_id = uid,
       status = 'uncompleted',
       task__challenge__id = self.kwargs['challenge_id']
-    ).order_by('id')
+    )
 
     #Check if task in the challenge
 
     obj = get_list_or_404(query)
     return obj
+
+class CreateUserTaskView(CreateAPIView):
+  """
+  POST data to user task table
+  """    
+  authentication_classes = [UserAuthentication]
+
+  queryset = UserTask.objects.all()
+  serializer_class = UserTaskSerializer
+
+  def create(self, request, *args, **kwargs):
+    try:
+      data_serializer = self.get_serializer(data=request.data)
+
+      #check if request body contains invalid input
+      if data_serializer.is_valid(raise_exception=True):
+
+        task = Task.objects.get(id=data_serializer.validated_data.get('task').id)
+        challenge_id = task.challenge.id
+
+        # check if user already enrolled in the challenge (if not raise an exception)
+        query = UserChallenge.objects.get(challenge=challenge_id, user=data_serializer.validated_data.get('user').id)
+
+        self.perform_create(data_serializer)
+        headers = self.get_success_headers(data_serializer.data)
+        return Response(data_serializer.data, status=status.HTTP_201_CREATED, headers=headers)
+    
+    except ObjectDoesNotExist:
+      return Response({"detail": "user not enrolled in the challenge/task does not exist"}, status=status.HTTP_400_BAD_REQUEST)
+    
+    except IntegrityError:
+      return Response({"detail": "user already enrolled in the task"}, status=status.HTTP_400_BAD_REQUEST)
+
+    except Exception as e:
+      return Response({"detail": "task enrollment failed"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 class GenerateJWTMockup(APIView):
   """
