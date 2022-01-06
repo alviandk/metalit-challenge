@@ -1,6 +1,13 @@
-from django.urls import path, include
+from django.conf import settings
+from django.urls import include, path
 from rest_framework import routers
-from .views import ChallengeView, TaskVerificationView, TaskView, ChallengeTaskView, UnverifiedTaskVerificationView, VerifiedTaskVerificationView
+
+from .views import (ChallengeTaskView, ChallengeView, CreateUserTaskView, GenerateJWTMockup, CreateUserChallengeView,
+                    TaskVerificationView, TaskView, TestJWTResponse,
+                    UnverifiedTaskVerificationView,
+                    UserChallengeIndividualView, UserChallengeListView, UserChallengeTaskView,
+                    UserTaskListCompletedView, UserTaskListUncompletedView,
+                    UserTaskListView, VerifiedTaskVerificationView)
 
 urlpatterns = [
     path('challenge', ChallengeView.as_view(), name="challenge"),
@@ -11,4 +18,29 @@ urlpatterns = [
     path('task-verification', TaskVerificationView.as_view(), name="task_verification"),
     path('task-verification/verified', VerifiedTaskVerificationView.as_view()),
     path('task-verification/unverified', UnverifiedTaskVerificationView.as_view()),
+
+    ### Endpoint related to user challenge ###
+    path('user-challenge/challenge:<int:challenge_id>', UserChallengeIndividualView.as_view()), #Auth, Perm
+    path('user-challenge/all', UserChallengeListView.as_view()), #Auth
+    path('user-challenge/create', CreateUserChallengeView.as_view()),
+
+    ### Endpoint related to user task ###
+    path('user-task/challenge:<int:challenge_id>', UserTaskListView.as_view()), #Auth
+    path('user-task/challenge:<int:challenge_id>/completed', UserTaskListCompletedView.as_view()), #Auth
+    path('user-task/challenge:<int:challenge_id>/uncompleted', UserTaskListUncompletedView.as_view()), #Auth
+    path('user-task/create', CreateUserTaskView.as_view()),
+
+    ### Endpoint related to user challenge and task ###
+    path('user-challenge-task/challenge/<int:challenge_id>/<int:user_id>', UserChallengeTaskView.as_view()),
 ]
+
+"""
+Additional API for dev mode
+"""
+if settings.DEV_MODE:
+    # if dev mode is set to true in env var, add this additional endpoint
+    urlpatterns += [
+        ### Endpoint to generate JWT token mockup
+        path('auth/generate-token/<int:user_id>', GenerateJWTMockup.as_view()),
+        path('auth/test-token', TestJWTResponse.as_view()),
+    ]
