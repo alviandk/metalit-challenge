@@ -3,6 +3,7 @@ from django.db import IntegrityError
 from django.db.models.base import Model
 from django.shortcuts import get_list_or_404, get_object_or_404
 from rest_framework import serializers, status
+from rest_framework import pagination
 from rest_framework.generics import (CreateAPIView, GenericAPIView, ListAPIView,
                                      ListCreateAPIView, RetrieveUpdateAPIView,
                                      UpdateAPIView)
@@ -335,3 +336,29 @@ class TestJWTResponse(APIView):
   def get(self, request):
     # if authorization header is specified and jwt token is valid
     return Response({"message": "testing JWT success"})
+
+### User Challenge Task
+class CustomPagination(PageNumberPagination):
+  page_size_query_param = 'page'
+
+
+class UserChallengeTaskView(APIView):
+  """
+  GET challenge and all of it's task based on uid and challenge id
+  """
+  # TODO: pagination
+  pagination_class = CustomPagination
+  
+  def get(self, request, *args, **kwargs):
+    # Get challenge
+    challenge_query = UserChallenge.objects.get(challenge_id=kwargs.get('challenge_id'), user_id=kwargs.get('user_id'))
+    challenge_serializer = UserChallengeSerializer(challenge_query)
+
+    #Get task
+    task_query = UserTask.objects.filter(task__challenge__id = self.kwargs['challenge_id'], user_id=kwargs.get('user_id'))
+    task_serializer = UserTaskSerializer(task_query, many=True)
+
+    return Response({
+      "challenge": challenge_serializer.data,
+      "tasks": task_serializer.data
+    }, status=status.HTTP_200_OK)

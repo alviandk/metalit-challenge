@@ -5,7 +5,7 @@ from rest_framework import routers
 from .views import (ChallengeTaskView, ChallengeView, CreateUserTaskView, GenerateJWTMockup, CreateUserChallengeView,
                     TaskVerificationView, TaskView, TestJWTResponse,
                     UnverifiedTaskVerificationView,
-                    UserChallengeIndividualView, UserChallengeListView,
+                    UserChallengeIndividualView, UserChallengeListView, UserChallengeTaskView,
                     UserTaskListCompletedView, UserTaskListUncompletedView,
                     UserTaskListView, VerifiedTaskVerificationView)
 
@@ -30,6 +30,8 @@ urlpatterns = [
     path('user-task/challenge:<int:challenge_id>/uncompleted', UserTaskListUncompletedView.as_view()), #Auth
     path('user-task/create', CreateUserTaskView.as_view()),
 
+    ### Endpoint related to user challenge and task ###
+    path('user-challenge-task/challenge/<int:challenge_id>/<int:user_id>', UserChallengeTaskView.as_view()),
 ]
 
 """
