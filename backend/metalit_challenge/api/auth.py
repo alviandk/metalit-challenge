@@ -10,7 +10,7 @@ from .serializers import UserSerializer
 
 from .models import User
 
-key = settings.JWT_SECRET_KEY
+key = settings.JWT_KEY
 
 class TokenHandler:
   @staticmethod
