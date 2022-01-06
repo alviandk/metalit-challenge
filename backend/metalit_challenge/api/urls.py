@@ -21,7 +21,7 @@ urlpatterns = [
 
     ### Endpoint related to user challenge ###
     path('user-challenge/challenge:<int:challenge_id>', UserChallengeIndividualView.as_view()), #Auth, Perm
-    path('user-challenge/all', UserChallengeListView.as_view()), #Auth
+    path('user-challenge/all', UserChallengeListView.as_view(), name="user-challenge-all"), #Auth
     path('user-challenge/create', CreateUserChallengeView.as_view()),
 
     ### Endpoint related to user task ###
@@ -41,6 +41,6 @@ if settings.DEV_MODE:
     # if dev mode is set to true in env var, add this additional endpoint
     urlpatterns += [
         ### Endpoint to generate JWT token mockup
-        path('auth/generate-token/<int:user_id>', GenerateJWTMockup.as_view()),
+        path('auth/generate-token/<int:user_id>', GenerateJWTMockup.as_view(), name="generate-token"),
         path('auth/test-token', TestJWTResponse.as_view()),
     ]
