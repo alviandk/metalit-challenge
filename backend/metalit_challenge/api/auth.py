@@ -10,14 +10,14 @@ from .serializers import UserSerializer
 
 from .models import User
 
-key = settings.JWT_KEY
+jwt_key = settings.JWT_KEY
 
 class TokenHandler:
   @staticmethod
   def token_encode(data:UserSerializer, exp_time:int):
     encoded_data = {'exp': datetime.datetime.now(tz=datetime.timezone.utc) + datetime.timedelta(hours=exp_time)}
     encoded_data.update(data)
-    return encoded_data, jwt.encode(encoded_data, key, algorithm="HS256")
+    return encoded_data, jwt.encode(encoded_data, jwt_key, algorithm="HS256")
 
   @staticmethod
   def token_decode(auth_header:str=None):
@@ -26,7 +26,7 @@ class TokenHandler:
     """
     jwt_token = auth_header.split()[1]
     try:
-      decoded_token = jwt.decode(jwt_token, key, algorithms="HS256")
+      decoded_token = jwt.decode(jwt_token, jwt_key, algorithms="HS256")
       return decoded_token
     except:
       return None
