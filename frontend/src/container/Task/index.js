@@ -41,7 +41,7 @@ class Task extends Component{
                           <h2 class="h5 mb-0">{task.name}</h2>
                           <span class="small text-gray">
                             <i class="fa fa-clock-o mr-1"></i>
-                              {task.reward_amount.toLocaleString('en')}
+                              Rp. {task.reward_amount.toLocaleString('en')}
                           </span>
                           <p class="text-small mt-2 font-weight-light">{task.description}</p>
                         </li>

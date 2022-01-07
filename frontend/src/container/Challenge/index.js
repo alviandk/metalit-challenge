@@ -16,7 +16,7 @@ class Challenge extends Component{
     }
     render(){
         return (
-        <section class="py-5 bg-light">
+        <section class="py-5">
             <div class="container">
                 <div class="row text-center mb-5">
                     <div class="col-lg-8 mx-auto">

@@ -2,7 +2,6 @@ import React from "react";
 import { NavLink } from 'react-router-dom'
 import { Home, Course, Login, Daftar } from "../../constant";
 import { Nav, Navbar } from "react-bootstrap";
-import "../../index.css";
 
 const Navig = () => {
   return (
