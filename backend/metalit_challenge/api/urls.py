@@ -26,8 +26,8 @@ urlpatterns = [
 
     ### Endpoint related to user task ###
     path('user-task/challenge:<int:challenge_id>', UserTaskListView.as_view(), name="user-task-all"), #Auth
-    path('user-task/challenge:<int:challenge_id>/completed', UserTaskListCompletedView.as_view()), #Auth
-    path('user-task/challenge:<int:challenge_id>/uncompleted', UserTaskListUncompletedView.as_view()), #Auth
+    path('user-task/challenge:<int:challenge_id>/completed', UserTaskListCompletedView.as_view(), name="user-task-completed"), #Auth
+    path('user-task/challenge:<int:challenge_id>/uncompleted', UserTaskListUncompletedView.as_view(), name="user-task-uncompleted"), #Auth
     path('user-task/create', CreateUserTaskView.as_view()),
 
     ### Endpoint related to user challenge and task ###
