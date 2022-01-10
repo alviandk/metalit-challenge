@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import Axios from 'axios';
 import { Link } from "react-router-dom";
-import { API_Challenge } from '../../constant';
+import { API_CHALLENGE } from '../../constant';
 
 class Challenge extends Component{
     state={
@@ -9,7 +9,7 @@ class Challenge extends Component{
     }
 
     componentDidMount(){
-        Axios.get(API_Challenge).then(response=>{
+        Axios.get(API_CHALLENGE).then(response=>{
             this.setState({
                 results:response.data.results,
             })

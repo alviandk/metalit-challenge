@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import Axios from 'axios';
-import { API_Task } from '../../constant';
+import { API_TASK } from '../../constant';
 
 class Task extends Component{
   state={
@@ -10,7 +10,7 @@ class Task extends Component{
 
   componentDidMount(){
     const id = this.props.match.params.id;
-    Axios.get(API_Task+id).then(response=>{
+    Axios.get(API_TASK+id).then(response=>{
       this.setState({
         tasks:response.data.tasks,
         challenge:response.data.challenge[0]

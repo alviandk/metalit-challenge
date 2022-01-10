@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { Help, About, Contact, Term_Conditions, Privacy_Policy  } from '../../constant';
+import { HELP, ABOUT, CONTACT, TERM_CONDITIONS, PRIVACY_POLICY  } from '../../constant';
 
 class Footer extends Component {
   render() {
@@ -12,30 +12,30 @@ class Footer extends Component {
                 <div className="footer-pad">
                   <ul className="list-unstyled px-4">
                     <li>
-                      <a className="text-reset text-decoration-none" href={Help}>
+                      <a className="text-reset text-decoration-none" href={HELP}>
                         Pusat Bantuan
                       </a>
                     </li>
                     <li>
-                      <a className="text-reset text-decoration-none" href={About}>
+                      <a className="text-reset text-decoration-none" href={ABOUT}>
                         Tentang Kami
                       </a>
                     </li>
 
                     <li>
-                      <a className="text-reset text-decoration-none" href={Contact}>
+                      <a className="text-reset text-decoration-none" href={CONTACT}>
                         Hubungi Kami
                       </a>
                     </li>
 
                     <li>
-                      <a className="text-reset text-decoration-none" href={Term_Conditions}>
+                      <a className="text-reset text-decoration-none" href={TERM_CONDITIONS}>
                         Syarat dan Ketentuan
                       </a>
                     </li>
 
                     <li>
-                      <a className="text-reset text-decoration-none" href={Privacy_Policy}>
+                      <a className="text-reset text-decoration-none" href={PRIVACY_POLICY}>
                         Kebijakan Privasi
                       </a>
                     </li>
