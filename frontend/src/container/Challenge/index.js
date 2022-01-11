@@ -42,11 +42,11 @@ class Challenge extends Component{
                                         <span>{challenge.status}</span>
                                     </div>
                                 </div>
-                                <button type="button" class="btn btn-primary">
+                                <button type="button" class="btn btn-primary mb-3">
                                 Lihat Task
                                 </button>
-                                <br class="mb-3"/>
-                                <button type="button" class="btn btn-primary">
+                                
+                                <button type="button" class="btn btn-primary mb-3">
                                     Kerjakan Challenge
                                 </button>
                             </div>

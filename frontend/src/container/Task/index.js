@@ -32,8 +32,8 @@ class Task extends Component{
               <div className="col-lg-7 mx-auto">
                 <div className="btn-task">
                   <a class="btn btn-link text-white" href="/" role="button">&#60;&#60; Kembali</a>
-                  <button type="button" class="btn btn-dark">
-                    Kerjakan challenge
+                  <button type="button" class="btn btn-success text-white">
+                    Kerjakan Challenge
                   </button>
                 </div>
 
