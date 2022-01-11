@@ -11,10 +11,6 @@ section.py-5 {
     border-radius: 10px
 }
 
-.c-details span {
-    font-weight: 300;
-    font-size: 13px
-}
 
 .btn-task{
   display: flex;
@@ -22,16 +18,6 @@ section.py-5 {
   margin-left: 40px;
 }
 
-.icon {
-    width: 50px;
-    height: 50px;
-    background-color: #eee;
-    border-radius: 15px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 39px
-}
 
 .badge span {
     background-color: #fffbec;

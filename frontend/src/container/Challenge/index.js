@@ -32,38 +32,23 @@ class Challenge extends Component{
                         <Link to={`/task/${challenge.id}`} 
                             className="text-reset text-decoration-none">
                             <div className="card p-3 mb-2">
-                                <div className="d-flex justify-content-between">
-                                    <div className="d-flex flex-row align-items-center">
-                                        <div className="icon">
-                                            <i className="bx bxl-mailchimp"></i>
-                                        </div>
-                                        <div className="ms-2 c-details">
-                                            <h6 className="mb-0">Mailchimp</h6>
-                                            <span>1 days ago</span>
-                                        </div>
+                                <div className="d-flex justify-content-between mb-4">
+                                    <div>
+                                        <h3 className="heading">{challenge.name}</h3>
+                                        <h6 className="heading">{challenge.description}</h6>
+                                        <h6 className="heading">Rp. {challenge.budget.toLocaleString('en')}</h6>
                                     </div>
                                     <div className="badge">
                                         <span>{challenge.status}</span>
                                     </div>
                                 </div>
-                                <div class="mt-5">
-                                    <h3 className="heading">{challenge.name}</h3>
-                                    <h6 className="heading">{challenge.description}</h6>
-                                    <h6 className="heading">Rp. {challenge.budget.toLocaleString('en')}</h6>
-                                    <div className="mt-5 text-center">
-                                        <div className="mb-3">
-                                            <button type="button" class="btn btn-primary">
-                                                Lihat Task
-                                            </button>
-                                        </div>
-
-                                        <div className="mb-3">
-                                            <button type="button" class="btn btn-primary">
-                                                Kerjakan Challenge
-                                            </button>
-                                        </div>
-                                    </div>
-                                </div>
+                                <button type="button" class="btn btn-primary">
+                                Lihat Task
+                                </button>
+                                <br class="mb-3"/>
+                                <button type="button" class="btn btn-primary">
+                                    Kerjakan Challenge
+                                </button>
                             </div>
                         </Link>
                     </div>
