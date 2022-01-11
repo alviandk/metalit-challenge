@@ -30,6 +30,14 @@ class Task extends Component{
 
           <div className="row">
               <div className="col-lg-7 mx-auto">
+                <div className="btn-task">
+                  <button type="button" class="btn btn-light">Back</button>
+                  <button type="button" class="btn btn-light">
+                    Kerjakan challenge
+                  </button>
+                </div>
+
+  
                   <ul className="timeline">
                     {this.state.tasks.map((task)=>{
                       return (
@@ -47,6 +55,11 @@ class Task extends Component{
                           <p className="text-small mt-2 font-weight-light">
                             {task.description}
                           </p>
+                          <div className="d-flex justify-content-end">
+                            <button type="button" class="btn btn-primary ">
+                              Upload Bukti Pengerjaan Task
+                            </button>
+                          </div>
                         </li>
                       );
                     })}  

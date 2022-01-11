@@ -49,16 +49,18 @@ class Challenge extends Component{
                                 <div class="mt-5">
                                     <h3 className="heading">{challenge.name}</h3>
                                     <h6 className="heading">{challenge.description}</h6>
-                                    <div className="mt-5">
-                                        <div className="progress">
-                                            <div className="progress-bar" role="progressbar">
-                                            </div>
+                                    <h6 className="heading">Rp. {challenge.budget.toLocaleString('en')}</h6>
+                                    <div className="mt-5 text-center">
+                                        <div className="mb-3">
+                                            <button type="button" class="btn btn-primary">
+                                                Lihat Task
+                                            </button>
                                         </div>
-                                        <div className="mt-3">
-                                        	<span className="text1">
-                                        		32 Applied
-                                                <span className="text2">of 50 capacity</span>
-                                        	</span>
+
+                                        <div className="mb-3">
+                                            <button type="button" class="btn btn-primary">
+                                                Kerjakan Challenge
+                                            </button>
                                         </div>
                                     </div>
                                 </div>
