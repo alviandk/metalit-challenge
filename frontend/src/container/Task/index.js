@@ -31,7 +31,7 @@ class Task extends Component{
           <div className="row">
               <div className="col-lg-7 mx-auto">
                 <div className="btn-task">
-                  <button class="btn btn-link text-white">&#60;&#60; Kembali</button>
+                  <a class="btn btn-link text-white" href="/" role="button">&#60;&#60; Kembali</a>
                   <button type="button" class="btn btn-dark">
                     Kerjakan challenge
                   </button>
