@@ -1,7 +1,7 @@
 from django.core.exceptions import ObjectDoesNotExist
 from django.db import IntegrityError
 from django.shortcuts import get_list_or_404
-from rest_framework import status
+from rest_framework import serializers, status
 from rest_framework.generics import (CreateAPIView, ListAPIView,
                                      ListCreateAPIView, RetrieveUpdateAPIView,)
 from rest_framework.pagination import PageNumberPagination
@@ -10,7 +10,7 @@ from rest_framework.views import APIView
 
 from .permissions import IsOwnerObjectPermission
 
-from .auth import UserAuthentication
+from .auth import PartialReadAuthenticaction, UserAuthentication
 
 from .models import (Challenge, Task, TaskVerification, User, UserChallenge,
                      UserTask)
@@ -88,6 +88,8 @@ class ChallengeTaskView(APIView):
   """
   GET challenge and all of it's tasks
   """
+  authentication_classes = [PartialReadAuthenticaction]
+
   def get_challenge(self, challenge_id):
     return Challenge.objects.filter(id=challenge_id)
 
@@ -95,13 +97,23 @@ class ChallengeTaskView(APIView):
     return Task.objects.filter(challenge_id=challenge_id)
 
   def get(self, request, challenge_id):
+
     challenge_query = self.get_challenge(challenge_id)
     task_query = self.get_task(challenge_id)
     challenge_serializers = ChallengeSerializer(challenge_query, many=True)
     task_serializers = TaskSerializer(task_query, many=True)
     if not challenge_query.exists() and not task_query.exists():
       return Response({"description": "challenge ID not found"}, status=status.HTTP_404_NOT_FOUND)
-    return Response({"challenge": challenge_serializers.data, "tasks": task_serializers.data})
+
+    #authentication
+    if request.user == True:
+      return Response({"challenge": challenge_serializers.data, "tasks": task_serializers.data})
+    else:
+      for i in range(len(task_serializers.data)):
+        del task_serializers.data[i]['description']
+        del task_serializers.data[i]['reward_amount']
+      
+      return Response({"challenge": challenge_serializers.data, "tasks": task_serializers.data})
 
 
 ### TASK VERIFICATION ###

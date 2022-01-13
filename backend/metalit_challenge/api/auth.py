@@ -46,3 +46,17 @@ class UserAuthentication(BaseAuthentication):
       raise exceptions.AuthenticationFailed('JWT token expired/invalid')
     user_id_query = User.objects.get_or_create(id=jwt_payload['id'])
     return (user_id_query, None)
+
+class PartialReadAuthenticaction(BaseAuthentication):
+  """
+  Return true or false to check if user is authenticated or not
+  """
+  def authenticate(self, request):
+    auth_header = request.META.get('HTTP_AUTHORIZATION')
+    if not auth_header:
+      return (False, None)
+    jwt_payload = TokenHandler.token_decode(auth_header)
+    if not jwt_payload:
+      # an error occured in jwt decoding process
+      raise exceptions.AuthenticationFailed('JWT token expired/invalid')
+    return (True, None)
