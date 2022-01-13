@@ -18,6 +18,7 @@ class Challenge(models.Model):
     status = models.CharField(max_length=11, choices=Status.choices, default=Status.UNPUBLISHED, null=False)
     budget = models.PositiveIntegerField(null=False)
     created_at = models.DateTimeField(auto_now_add=True, null=False)
+    end_date = models.DateTimeField(default=None, null=False)
 
     def __str__(self):
       return f"{self.name}"

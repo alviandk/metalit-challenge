@@ -1,12 +1,9 @@
 from django.core.exceptions import ObjectDoesNotExist
 from django.db import IntegrityError
-from django.db.models.base import Model
-from django.shortcuts import get_list_or_404, get_object_or_404
-from rest_framework import serializers, status
-from rest_framework import pagination
-from rest_framework.generics import (CreateAPIView, GenericAPIView, ListAPIView,
-                                     ListCreateAPIView, RetrieveUpdateAPIView,
-                                     UpdateAPIView)
+from django.shortcuts import get_list_or_404
+from rest_framework import status
+from rest_framework.generics import (CreateAPIView, ListAPIView,
+                                     ListCreateAPIView, RetrieveUpdateAPIView,)
 from rest_framework.pagination import PageNumberPagination
 from rest_framework.response import Response
 from rest_framework.views import APIView
@@ -22,7 +19,6 @@ from .serializers import (ChallengeSerializer, TaskSerializer,
                           UserTaskSerializer)
 
 # JWT mockup import
-from django.conf import settings
 from .auth import TokenHandler
 
 # Create your views here.
@@ -38,6 +34,38 @@ class ChallengeView(ListAPIView):
   queryset = Challenge.objects.filter(status='published')
   serializer_class = ChallengeSerializer
   pagination_class = PageNumberPagination
+
+  def list(self, request):
+    queryset = self.get_queryset()
+    serializer = ChallengeSerializer(queryset, many = True)
+
+    page = self.paginate_queryset(queryset)
+    if page is not None:
+      serializer = self.get_serializer(page, many=True)
+
+      # add total_reward attribute
+      for i in range(len(serializer.data)):
+        total_reward = 0
+        challenge_id = serializer.data[i]['id']
+        task_query = Task.objects.filter(challenge=challenge_id)
+        for item in task_query:
+          total_reward += item.reward_amount
+        serializer.data[i]['total_reward'] = total_reward
+
+      return self.get_paginated_response(serializer.data)
+
+    serializer = self.get_serializer(queryset, many=True)
+
+    # add total_reward attribute
+    for i in range(len(serializer.data)):
+      total_reward = 0
+      challenge_id = serializer.data[i]['id']
+      task_query = Task.objects.filter(challenge=challenge_id)
+      for item in task_query:
+        total_reward += item.reward_amount
+      serializer.data[i]['total_reward'] = total_reward
+
+    return Response(serializer.data)
 
 class TaskView(ListAPIView):
   """
