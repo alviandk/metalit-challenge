@@ -20,7 +20,7 @@ urlpatterns = [
     path('task-verification/unverified', UnverifiedTaskVerificationView.as_view()),
 
     ### Endpoint related to user challenge ###
-    path('user-challenge/challenge:<int:challenge_id>', UserChallengeIndividualView.as_view()), #Auth, Perm
+    path('user-challenge/challenge:<int:challenge_id>', UserChallengeIndividualView.as_view(), name="user-challenge-individual"), #Auth, Perm
     path('user-challenge/all', UserChallengeListView.as_view(), name="user-challenge-all"), #Auth
     path('user-challenge/create', CreateUserChallengeView.as_view()),
 

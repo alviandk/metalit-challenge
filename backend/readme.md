@@ -11,4 +11,4 @@
 
 1. Run virtual environment
 2. Run ```cd backend\metalit-challenge```
-3. Run ```python manage.py test api.test.{file_name}```
+3. Run ```python manage.py test api.tests.{file_name}```
