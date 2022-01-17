@@ -3,25 +3,34 @@ from django.utils.translation import gettext_lazy as _
 from django.db import models
 
 class Challenge(models.Model):
-    """
-    Model for challenge table in database
-    """
-    class Meta:
-      ordering = ['-created_at']
+  """
+  Model for challenge table in database
+  """
+  class Meta:
+    ordering = ['-created_at']
 
-    class Status(models.TextChoices):
-      PUBLISHED = 'published', _('published')
-      UNPUBLISHED = 'unpublished', _('unpublished')
+  class Status(models.TextChoices):
+    PUBLISHED = 'published', _('published')
+    UNPUBLISHED = 'unpublished', _('unpublished')
 
-    name = models.CharField(max_length=255, null=False)
-    description = models.TextField(blank=True, null=True)
-    status = models.CharField(max_length=11, choices=Status.choices, default=Status.UNPUBLISHED, null=False)
-    budget = models.PositiveIntegerField(null=False)
-    created_at = models.DateTimeField(auto_now_add=True, null=False)
-    end_date = models.DateTimeField(default=None, null=False)
+  name = models.CharField(max_length=255, null=False)
+  description = models.TextField(blank=True, null=True)
+  status = models.CharField(max_length=11, choices=Status.choices, default=Status.UNPUBLISHED, null=False)
+  budget = models.PositiveIntegerField(null=False)
+  created_at = models.DateTimeField(auto_now_add=True, null=False)
+  end_date = models.DateTimeField(default=None, null=False)
 
-    def __str__(self):
-      return f"{self.name}"
+  def __str__(self):
+    return f"{self.name}"
+    
+  @property
+  def sum_rewards(self):
+    total_reward = 0
+    task_query = Task.objects.filter(challenge=self.id)
+    for item in task_query:
+      total_reward += item.reward_amount
+
+    return total_reward
 
 class Task(models.Model):
   """

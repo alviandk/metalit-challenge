@@ -6,9 +6,11 @@ from .models import (Challenge, Task, TaskVerification, User, UserChallenge,
 
 
 class ChallengeSerializer(serializers.ModelSerializer):
+  total_reward = serializers.IntegerField(source='sum_rewards')
+
   class Meta:
     model = Challenge
-    fields = '__all__'
+    fields = ['id', 'name', 'description', 'status', 'budget', 'created_at', 'end_date', 'total_reward']
 
 class TaskSerializer(serializers.ModelSerializer):
   class Meta:

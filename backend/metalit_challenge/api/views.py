@@ -43,28 +43,10 @@ class ChallengeView(ListAPIView):
     if page is not None:
       serializer = self.get_serializer(page, many=True)
 
-      # add total_reward attribute
-      for i in range(len(serializer.data)):
-        total_reward = 0
-        challenge_id = serializer.data[i]['id']
-        task_query = Task.objects.filter(challenge=challenge_id)
-        for item in task_query:
-          total_reward += item.reward_amount
-        serializer.data[i]['total_reward'] = total_reward
-
       return self.get_paginated_response(serializer.data)
 
     serializer = self.get_serializer(queryset, many=True)
-
-    # add total_reward attribute
-    for i in range(len(serializer.data)):
-      total_reward = 0
-      challenge_id = serializer.data[i]['id']
-      task_query = Task.objects.filter(challenge=challenge_id)
-      for item in task_query:
-        total_reward += item.reward_amount
-      serializer.data[i]['total_reward'] = total_reward
-
+    
     return Response(serializer.data)
 
 class TaskView(ListAPIView):
