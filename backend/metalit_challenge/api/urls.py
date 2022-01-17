@@ -22,7 +22,7 @@ urlpatterns = [
     ### Endpoint related to user challenge ###
     path('user-challenge/challenge:<int:challenge_id>', UserChallengeIndividualView.as_view(), name="user-challenge-individual"), #Auth, Perm
     path('user-challenge/all', UserChallengeListView.as_view(), name="user-challenge-all"), #Auth
-    path('user-challenge/create', CreateUserChallengeView.as_view()),
+    path('user-challenge/create', CreateUserChallengeView.as_view(), name="user-challenge-creation"),
 
     ### Endpoint related to user task ###
     path('user-task/challenge:<int:challenge_id>', UserTaskListView.as_view(), name="user-task-all"), #Auth
