@@ -43,13 +43,14 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
 
     'api',
-    'rest_framework'
+    'rest_framework',
+    'corsheaders',
 ]
 
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': [],
     'DEFAULT_PAGINATION_CLASS' : 'rest_framework.pagination.PageNumberPagination',
-    'PAGE_SIZE': 1,
+    'PAGE_SIZE': 3,
 }
 
 MIDDLEWARE = [
@@ -60,7 +61,10 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
 ]
+
+CORS_ORIGIN_ALLOW_ALL = True
 
 ROOT_URLCONF = 'metalit_challenge.urls'
 
@@ -85,21 +89,31 @@ WSGI_APPLICATION = 'metalit_challenge.wsgi.application'
 
 # Database
 # https://docs.djangoproject.com/en/4.0/ref/settings/#databases
+DB_ENGINE = env('DJANGO_DB_ENGINE', default='mysql')
 
-DATABASES = {
-    # 'default': {
-    #     'ENGINE': 'django.db.backends.sqlite3',
-    #     'NAME': BASE_DIR / 'db.sqlite3',
-    # }
-    'default': {
-        'ENGINE'    : 'django.db.backends.mysql',
-        'NAME'      : env('NAME'),
-        'USER'      : env('USER'),
-        'PASSWORD'  : env('PASSWORD'),
-        'HOST'      : env('HOST'),
-        'PORT'      : env('PORT')
+if DB_ENGINE == 'sqlite':
+    DB_NAME = env('DB_NAME', default=BASE_DIR / 'db.sqlite3')
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': DB_NAME,
+        }
     }
-}
+else:
+    DATABASES = {
+        # 'default': {
+        #     'ENGINE': 'django.db.backends.sqlite3',
+        #     'NAME': BASE_DIR / 'db.sqlite3',
+        # }
+        'default': {
+            'ENGINE'    : 'django.db.backends.mysql',
+            'NAME'      : env('NAME'),
+            'USER'      : env('USER'),
+            'PASSWORD'  : env('PASSWORD'),
+            'HOST'      : env('HOST'),
+            'PORT'      : env('PORT')
+        }
+    }
 
 
 # Password validation
@@ -142,6 +156,11 @@ STATIC_URL = 'static/'
 # https://docs.djangoproject.com/en/4.0/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+CORS_ALLOWED_ORIGINS = [
+    "http://localhost:3000",
+    "http://127.0.0.1:3000"
+]
 
 JWT_KEY = env('JWT_KEY')
 
