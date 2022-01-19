@@ -59,22 +59,22 @@ class Footer extends Component {
                 </p>
                 <div className="text-center">
                   <span className="mx-2">
-                    <a href="https://twitter.com/metalit_id" target="_blank">
+                    <a href="https://twitter.com/metalit_id" target="_blank" rel="noreferrer">
                       <i className="fab fa-twitter"></i>
                     </a>
                   </span>
                   <span className="mx-2">
-                    <a href="https://www.facebook.com/Metalit-107151784977073" target="_blank">
+                    <a href="https://www.facebook.com/Metalit-107151784977073" target="_blank" rel="noreferrer">
                       <i className="fab fa-facebook-f"></i>
                     </a>
                   </span>
                   <span className="mx-2">
-                    <a href="https://instagram.com/metalit.id" target="_blank">
+                    <a href="https://instagram.com/metalit.id" target="_blank" rel="noreferrer">
                       <i className="fab fa-instagram"></i>
                     </a>
                   </span>
                   <span className="mx-2">
-                    <a href="https://www.linkedin.com/company/metalit-id" target="_blank">
+                    <a href="https://www.linkedin.com/company/metalit-id" target="_blank" rel="noreferrer">
                       <i className="fab fa-linkedin"></i>
                       </a>  
                   </span>  

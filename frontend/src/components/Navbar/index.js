@@ -1,5 +1,4 @@
 import React from "react";
-import { NavLink } from 'react-router-dom'
 import { BLOG, HOME, COURSE, LOGIN, DAFTAR } from "../../constant";
 import { Nav, Navbar } from "react-bootstrap";
 
@@ -11,6 +10,7 @@ const Navig = () => {
           <a href={HOME}>
             <img
               className='img50'
+              alt=""
               src="https://metalit.oss-ap-southeast-5.aliyuncs.com/static/metalit/assets/images/Group_38_1.png"
             />
           </a>

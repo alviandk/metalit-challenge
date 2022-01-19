@@ -33,27 +33,27 @@ const Payouts = () => {
 
                         <div class="list-group list-group-dark list-group-borderless">
                           <a class="list-group-item" 
-                            href="\">
+                            href="/">
                             <i class="bi bi-ui-checks-grid fa-fw me-2"></i>
                             Dashboard
                           </a>
                           <a class="list-group-item" 
-                            href="student-subscription.html">
+                            href="/">
                             <i class="bi bi-card-checklist fa-fw me-2"></i>
                             My Subscriptions
                           </a>
                           <a class="list-group-item" 
-                            href="student-course-list.html">
+                            href="/">
                             <i class="bi bi-basket fa-fw me-2"></i>
                             My Courses
                           </a>
                           <a class="list-group-item"
-                            href="student-payment-info.html">
+                            href="/">
                             <i class="bi bi-credit-card-2-front fa-fw me-2"></i>
                             Payment info
                           </a>
                           <a class="list-group-item" 
-                            href="student-bookmark.html">
+                            href="/">
                             <i class="bi bi-cart-check fa-fw me-2"></i>
                             Wishlist
                           </a>
@@ -68,22 +68,22 @@ const Payouts = () => {
                             Payouts
                           </a>
                           <a class="list-group-item" 
-                            href="edit-profile">
+                            href="/edit-profile">
                             <i class="bi bi-pencil-square fa-fw me-2"></i>
                             Edit Profile
                           </a>
                           <a class="list-group-item" 
-                            href="setting">
+                            href="/setting">
                             <i class="bi bi-gear fa-fw me-2"></i>
                             Settings
                           </a>
                           <a class="list-group-item" 
-                            href="instructor-delete-account.html">
+                            href="/instructor-delete-account.html">
                             <i class="bi bi-trash fa-fw me-2"></i>
                             Delete Profile
                           </a>
                           <a class="list-group-item text-danger bg-danger-soft-hover" 
-                            href="#">
+                            href="/sign-out">
                             <i class="fas fa-sign-out-alt fa-fw me-2"></i>
                             Sign Out
                           </a>
@@ -107,7 +107,7 @@ const Payouts = () => {
                         </span>
                       </div>
                       <h2 class="mb-2 mt-2">$12,825</h2>
-                      <a href="#">View transaction</a>
+                      <a href="/">View transaction</a>
                     </div>
                   </div>
 
@@ -123,7 +123,7 @@ const Payouts = () => {
                     <div class="bg-primary bg-opacity-10 h-100 p-3 rounded-3">
                       <h6 class="mb-0">Balance</h6>
                       <h2 class="mb-2 mt-2">$8,485</h2>
-                      <a href="#" 
+                      <a href="/" 
                         class="btn btn-sm btn-primary mb-0">
                         Withdraw Earning
                       </a>
@@ -179,12 +179,12 @@ const Payouts = () => {
                           <tr>
                             <td>
                               <h6 class="mt-2 mt-lg-0 mb-0">
-                                <a href="#">Successful payout #102356</a>
+                                <a href="/">Successful payout #102356</a>
                               </h6>
                             </td>
 
                             <td>$3,999
-                              <a href="#"
+                              <a href="/"
                                 class="h6 mb-0"
                                 role="button" id="dropdownShare"
                                 data-bs-toggle="dropdown" 
@@ -242,12 +242,12 @@ const Payouts = () => {
                           <tr>
                             <td>
                               <h6 class="mt-2 mt-lg-0 mb-0">
-                                <a href="#">Successful payout #102589</a>
+                                <a href="/">Successful payout #102589</a>
                               </h6>
                             </td>
 
                             <td>$4,875
-                              <a href="#" 
+                              <a href="/" 
                                 class="h6 mb-0" 
                                 role="button" 
                                 id="dropdownShare1" 
@@ -306,12 +306,12 @@ const Payouts = () => {
                           <tr>
                             <td>
                               <h6 class="mt-2 mt-lg-0 mb-0">
-                                <a href="#">Successful payout #108645</a>
+                                <a href="/">Successful payout #108645</a>
                               </h6>
                             </td>
 
                             <td>$1,800
-                              <a href="#" 
+                              <a href="/" 
                                 class="h6 mb-0" 
                                 role="button" 
                                 id="dropdownShare2" 
@@ -370,12 +370,12 @@ const Payouts = () => {
                           <tr>
                             <td>
                               <h6 class="mt-2 mt-lg-0 mb-0">
-                                <a href="#">Successful payout #108645</a>
+                                <a href="/">Successful payout #108645</a>
                               </h6>
                             </td>
 
                             <td>$6,800
-                              <a href="#" 
+                              <a href="/" 
                                 class="h6 mb-0" 
                                 role="button" 
                                 id="dropdownShare3" 
@@ -434,12 +434,12 @@ const Payouts = () => {
                           <tr>
                             <td>
                               <h6 class="mt-2 mt-lg-0 mb-0">
-                                <a href="#">Successful payout #108645</a>
+                                <a href="/">Successful payout #108645</a>
                               </h6>
                             </td>
 
                             <td>$3,576
-                              <a href="#" 
+                              <a href="/" 
                                 class="h6 mb-0" 
                                 role="button" 
                                 id="dropdownShare4" 
@@ -508,21 +508,21 @@ const Payouts = () => {
                         <ul class="pagination pagination-sm pagination-primary-soft mb-0 pb-0">
                           <li class="page-item mb-0">
                             <a class="page-link" 
-                              href="#" tabindex="-1">
+                              href="/" tabindex="-1">
                               <i class="fas fa-angle-left"></i>
                             </a>
                           </li>
                           <li class="page-item mb-0">
-                            <a class="page-link" href="#">1</a>
+                            <a class="page-link" href="/">1</a>
                           </li>
                           <li class="page-item mb-0 active">
-                            <a class="page-link" href="#">2</a>
+                            <a class="page-link" href="/">2</a>
                           </li>
                           <li class="page-item mb-0">
-                            <a class="page-link" href="#">3</a>
+                            <a class="page-link" href="/">3</a>
                           </li>
                           <li class="page-item mb-0">
-                            <a class="page-link" href="#">
+                            <a class="page-link" href="/">
                               <i class="fas fa-angle-right"></i>
                             </a>
                           </li>

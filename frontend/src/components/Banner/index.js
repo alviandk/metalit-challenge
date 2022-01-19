@@ -43,7 +43,7 @@ const Banner = () => {
                   </div>
 
                   <div class="mt-2 mt-sm-0">
-                    <a href="student-course-list.html"
+                    <a href="/"
                       class="btn btn-outline-primary mb-0">
                       View my courses
                     </a>
@@ -55,7 +55,7 @@ const Banner = () => {
             <hr class="d-xl-none"/>
             <div class="col-12 col-xl-3 d-flex justify-content-between align-items-center">
               <a class="h6 mb-0 fw-bold d-xl-none"
-                href="#">Menu
+                href="/">Menu
               </a>
               <button class="btn btn-primary d-xl-none"
                   type="button"
