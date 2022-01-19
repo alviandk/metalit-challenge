@@ -25,12 +25,9 @@ class Challenge(models.Model):
     
   @property
   def sum_rewards(self):
-    total_reward = 0
-    task_query = Task.objects.filter(challenge=self.id)
-    for item in task_query:
-      total_reward += item.reward_amount
+    obj = Task.objects.filter(challenge=self.id).aggregate(models.Sum('reward_amount'))
 
-    return total_reward
+    return 0 if obj['reward_amount__sum'] is None else obj['reward_amount__sum']
 
 class Task(models.Model):
   """
