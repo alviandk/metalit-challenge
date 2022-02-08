@@ -6,37 +6,37 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('api', '0008_usertask_userchallenge_usertask_unique_task_user_and_more'),
+        ("api", "0008_usertask_userchallenge_usertask_unique_task_user_and_more"),
     ]
 
     operations = [
         migrations.AlterModelOptions(
-            name='challenge',
-            options={'ordering': ['-created_at']},
+            name="challenge",
+            options={"ordering": ["-created_at"]},
         ),
         migrations.AlterModelOptions(
-            name='task',
-            options={'ordering': ['-created_at']},
+            name="task",
+            options={"ordering": ["-created_at"]},
         ),
         migrations.AlterModelOptions(
-            name='taskverification',
-            options={'ordering': ['-created_at']},
+            name="taskverification",
+            options={"ordering": ["-created_at"]},
         ),
         migrations.AlterModelOptions(
-            name='user',
-            options={'ordering': ['id']},
+            name="user",
+            options={"ordering": ["id"]},
         ),
         migrations.AlterModelOptions(
-            name='userchallenge',
-            options={'ordering': ['-created_at']},
+            name="userchallenge",
+            options={"ordering": ["-created_at"]},
         ),
         migrations.AlterModelOptions(
-            name='usertask',
-            options={'ordering': ['-created_at']},
+            name="usertask",
+            options={"ordering": ["-created_at"]},
         ),
         migrations.AddField(
-            model_name='challenge',
-            name='end_date',
+            model_name="challenge",
+            name="end_date",
             field=models.DateTimeField(default=None),
         ),
     ]

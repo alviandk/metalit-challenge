@@ -8,38 +8,108 @@ import django.db.models.expressions
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('api', '0007_rename_deskripsi_challenge_description_and_more'),
+        ("api", "0007_rename_deskripsi_challenge_description_and_more"),
     ]
 
     operations = [
         migrations.CreateModel(
-            name='UserTask',
+            name="UserTask",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('status', models.CharField(choices=[('completed', 'completed'), ('uncompleted', 'uncompleted')], default='uncompleted', max_length=11)),
-                ('completed_at', models.DateTimeField(blank=True, default=None, null=True)),
-                ('created_at', models.DateTimeField(auto_now_add=True)),
-                ('task', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='api.task')),
-                ('user', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='api.user')),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                (
+                    "status",
+                    models.CharField(
+                        choices=[
+                            ("completed", "completed"),
+                            ("uncompleted", "uncompleted"),
+                        ],
+                        default="uncompleted",
+                        max_length=11,
+                    ),
+                ),
+                (
+                    "completed_at",
+                    models.DateTimeField(blank=True, default=None, null=True),
+                ),
+                ("created_at", models.DateTimeField(auto_now_add=True)),
+                (
+                    "task",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE, to="api.task"
+                    ),
+                ),
+                (
+                    "user",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE, to="api.user"
+                    ),
+                ),
             ],
         ),
         migrations.CreateModel(
-            name='UserChallenge',
+            name="UserChallenge",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('status', models.CharField(choices=[('completed', 'completed'), ('uncompleted', 'uncompleted')], default='uncompleted', max_length=11)),
-                ('completed_at', models.DateTimeField(blank=True, default=None, null=True)),
-                ('created_at', models.DateTimeField(auto_now_add=True)),
-                ('challenge', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='api.challenge')),
-                ('user', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='api.user')),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                (
+                    "status",
+                    models.CharField(
+                        choices=[
+                            ("completed", "completed"),
+                            ("uncompleted", "uncompleted"),
+                        ],
+                        default="uncompleted",
+                        max_length=11,
+                    ),
+                ),
+                (
+                    "completed_at",
+                    models.DateTimeField(blank=True, default=None, null=True),
+                ),
+                ("created_at", models.DateTimeField(auto_now_add=True)),
+                (
+                    "challenge",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE, to="api.challenge"
+                    ),
+                ),
+                (
+                    "user",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE, to="api.user"
+                    ),
+                ),
             ],
         ),
         migrations.AddConstraint(
-            model_name='usertask',
-            constraint=models.UniqueConstraint(django.db.models.expressions.F('task'), django.db.models.expressions.F('user'), name='unique_task_user'),
+            model_name="usertask",
+            constraint=models.UniqueConstraint(
+                django.db.models.expressions.F("task"),
+                django.db.models.expressions.F("user"),
+                name="unique_task_user",
+            ),
         ),
         migrations.AddConstraint(
-            model_name='userchallenge',
-            constraint=models.UniqueConstraint(django.db.models.expressions.F('challenge'), django.db.models.expressions.F('user'), name='unique_challenge_user'),
+            model_name="userchallenge",
+            constraint=models.UniqueConstraint(
+                django.db.models.expressions.F("challenge"),
+                django.db.models.expressions.F("user"),
+                name="unique_challenge_user",
+            ),
         ),
     ]

@@ -7,19 +7,36 @@ class Migration(migrations.Migration):
 
     initial = True
 
-    dependencies = [
-    ]
+    dependencies = []
 
     operations = [
         migrations.CreateModel(
-            name='Challenge',
+            name="Challenge",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('nama', models.CharField(max_length=255)),
-                ('deskripsi', models.TextField(blank=True, null=True)),
-                ('status', models.CharField(choices=[('published', 'published'), ('unpublished', 'unpublished')], default='unpublished', max_length=11)),
-                ('budget', models.PositiveIntegerField()),
-                ('created_at', models.DateTimeField(auto_now_add=True)),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("nama", models.CharField(max_length=255)),
+                ("deskripsi", models.TextField(blank=True, null=True)),
+                (
+                    "status",
+                    models.CharField(
+                        choices=[
+                            ("published", "published"),
+                            ("unpublished", "unpublished"),
+                        ],
+                        default="unpublished",
+                        max_length=11,
+                    ),
+                ),
+                ("budget", models.PositiveIntegerField()),
+                ("created_at", models.DateTimeField(auto_now_add=True)),
             ],
         ),
     ]

@@ -6,13 +6,13 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('api', '0004_user_taskverification'),
+        ("api", "0004_user_taskverification"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='taskverification',
-            name='verified_at',
+            model_name="taskverification",
+            name="verified_at",
             field=models.DateTimeField(blank=True, default=None),
         ),
     ]

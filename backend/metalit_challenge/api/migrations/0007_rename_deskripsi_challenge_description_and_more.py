@@ -6,33 +6,33 @@ from django.db import migrations
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('api', '0006_alter_taskverification_verified_at'),
+        ("api", "0006_alter_taskverification_verified_at"),
     ]
 
     operations = [
         migrations.RenameField(
-            model_name='challenge',
-            old_name='deskripsi',
-            new_name='description',
+            model_name="challenge",
+            old_name="deskripsi",
+            new_name="description",
         ),
         migrations.RenameField(
-            model_name='challenge',
-            old_name='nama',
-            new_name='name',
+            model_name="challenge",
+            old_name="nama",
+            new_name="name",
         ),
         migrations.RenameField(
-            model_name='task',
-            old_name='deskripsi',
-            new_name='description',
+            model_name="task",
+            old_name="deskripsi",
+            new_name="description",
         ),
         migrations.RenameField(
-            model_name='task',
-            old_name='nama',
-            new_name='name',
+            model_name="task",
+            old_name="nama",
+            new_name="name",
         ),
         migrations.RenameField(
-            model_name='user',
-            old_name='nama',
-            new_name='name',
+            model_name="user",
+            old_name="nama",
+            new_name="name",
         ),
     ]

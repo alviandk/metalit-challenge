@@ -7,27 +7,60 @@ import django.db.models.deletion
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('api', '0003_rename_challenge_id_task_challenge'),
+        ("api", "0003_rename_challenge_id_task_challenge"),
     ]
 
     operations = [
         migrations.CreateModel(
-            name='User',
+            name="User",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('nama', models.CharField(max_length=255)),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("nama", models.CharField(max_length=255)),
             ],
         ),
         migrations.CreateModel(
-            name='TaskVerification',
+            name="TaskVerification",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('submission', models.TextField(blank=True, null=True)),
-                ('is_verified', models.CharField(choices=[('true', 'true'), ('false', 'false')], default='false', max_length=5)),
-                ('verified_at', models.DateTimeField(default=None)),
-                ('created_at', models.DateTimeField(auto_now_add=True)),
-                ('challenge', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='api.challenge')),
-                ('task', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='api.task')),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("submission", models.TextField(blank=True, null=True)),
+                (
+                    "is_verified",
+                    models.CharField(
+                        choices=[("true", "true"), ("false", "false")],
+                        default="false",
+                        max_length=5,
+                    ),
+                ),
+                ("verified_at", models.DateTimeField(default=None)),
+                ("created_at", models.DateTimeField(auto_now_add=True)),
+                (
+                    "challenge",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE, to="api.challenge"
+                    ),
+                ),
+                (
+                    "task",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE, to="api.task"
+                    ),
+                ),
             ],
         ),
     ]

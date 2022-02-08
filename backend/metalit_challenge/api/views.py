@@ -2,8 +2,12 @@ from django.core.exceptions import ObjectDoesNotExist
 from django.db import IntegrityError
 from django.shortcuts import get_list_or_404
 from rest_framework import serializers, status
-from rest_framework.generics import (CreateAPIView, ListAPIView,
-                                     ListCreateAPIView, RetrieveUpdateAPIView,)
+from rest_framework.generics import (
+    CreateAPIView,
+    ListAPIView,
+    ListCreateAPIView,
+    RetrieveUpdateAPIView,
+)
 from rest_framework.pagination import PageNumberPagination
 from rest_framework.response import Response
 from rest_framework.views import APIView
@@ -12,11 +16,15 @@ from .permissions import IsOwnerObjectPermission
 
 from .auth import PartialReadAuthenticaction, UserAuthentication
 
-from .models import (Challenge, Task, TaskVerification, User, UserChallenge,
-                     UserTask)
-from .serializers import (ChallengeSerializer, TaskSerializer,
-                          TaskVerificationSerializer, UserChallengeSerializer, UserSerializer,
-                          UserTaskSerializer)
+from .models import Challenge, Task, TaskVerification, User, UserChallenge, UserTask
+from .serializers import (
+    ChallengeSerializer,
+    TaskSerializer,
+    TaskVerificationSerializer,
+    UserChallengeSerializer,
+    UserSerializer,
+    UserTaskSerializer,
+)
 
 # JWT mockup import
 from .auth import TokenHandler
@@ -27,360 +35,443 @@ from .auth import TokenHandler
 
 ### CHALLENGE AND TASK ###
 
+
 class ChallengeView(ListAPIView):
-  """
-  GET all challenge already published
-  """
-  queryset = Challenge.objects.filter(status='published')
-  serializer_class = ChallengeSerializer
-  pagination_class = PageNumberPagination
+    """
+    GET all challenge already published
+    """
 
-  def list(self, request):
-    queryset = self.get_queryset()
-    serializer = ChallengeSerializer(queryset, many = True)
+    queryset = Challenge.objects.filter(status="published")
+    serializer_class = ChallengeSerializer
+    pagination_class = PageNumberPagination
 
-    page = self.paginate_queryset(queryset)
-    if page is not None:
-      serializer = self.get_serializer(page, many=True)
+    def list(self, request):
+        queryset = self.get_queryset()
+        serializer = ChallengeSerializer(queryset, many=True)
 
-      return self.get_paginated_response(serializer.data)
+        page = self.paginate_queryset(queryset)
+        if page is not None:
+            serializer = self.get_serializer(page, many=True)
 
-    serializer = self.get_serializer(queryset, many=True)
-    
-    return Response(serializer.data)
+            return self.get_paginated_response(serializer.data)
+
+        serializer = self.get_serializer(queryset, many=True)
+
+        return Response(serializer.data)
+
 
 class TaskView(ListAPIView):
-  """
-  GET all tasks by challenge id
-  """
-  serializer_class = TaskSerializer
-  pagination_class = PageNumberPagination
+    """
+    GET all tasks by challenge id
+    """
 
-  def get_queryset(self):
-    """
-    Override default queryset method on ListAPIView
-    """
-    query = Task.objects.filter(
-      challenge_id = self.kwargs['challenge_id']
-    )
-    obj = get_list_or_404(query)
-    return obj
+    serializer_class = TaskSerializer
+    pagination_class = PageNumberPagination
+
+    def get_queryset(self):
+        """
+        Override default queryset method on ListAPIView
+        """
+        query = Task.objects.filter(challenge_id=self.kwargs["challenge_id"])
+        obj = get_list_or_404(query)
+        return obj
+
 
 class ChallengeTaskView(APIView):
-  """
-  GET challenge and all of it's tasks
-  """
-  authentication_classes = [PartialReadAuthenticaction]
+    """
+    GET challenge and all of it's tasks
+    """
 
-  def get_challenge(self, challenge_id):
-    return Challenge.objects.filter(id=challenge_id)
+    authentication_classes = [PartialReadAuthenticaction]
 
-  def get_task(self, challenge_id):
-    return Task.objects.filter(challenge_id=challenge_id)
+    def get_challenge(self, challenge_id):
+        return Challenge.objects.filter(id=challenge_id)
 
-  def get(self, request, challenge_id):
+    def get_task(self, challenge_id):
+        return Task.objects.filter(challenge_id=challenge_id)
 
-    challenge_query = self.get_challenge(challenge_id)
-    task_query = self.get_task(challenge_id)
-    challenge_serializers = ChallengeSerializer(challenge_query, many=True)
-    task_serializers = TaskSerializer(task_query, many=True)
-    if not challenge_query.exists() and not task_query.exists():
-      return Response({"description": "challenge ID not found"}, status=status.HTTP_404_NOT_FOUND)
+    def get(self, request, challenge_id):
 
-    #authentication
-    if request.user == True:
-      return Response({"challenge": challenge_serializers.data, "tasks": task_serializers.data})
-    else:
-      for i in range(len(task_serializers.data)):
-        del task_serializers.data[i]['description']
-        del task_serializers.data[i]['reward_amount']
-      
-      return Response({"challenge": challenge_serializers.data, "tasks": task_serializers.data})
+        challenge_query = self.get_challenge(challenge_id)
+        task_query = self.get_task(challenge_id)
+        challenge_serializers = ChallengeSerializer(challenge_query, many=True)
+        task_serializers = TaskSerializer(task_query, many=True)
+        if not challenge_query.exists() and not task_query.exists():
+            return Response(
+                {"description": "challenge ID not found"},
+                status=status.HTTP_404_NOT_FOUND,
+            )
+
+        # authentication
+        if request.user == True:
+            return Response(
+                {
+                    "challenge": challenge_serializers.data,
+                    "tasks": task_serializers.data,
+                }
+            )
+        else:
+            for i in range(len(task_serializers.data)):
+                del task_serializers.data[i]["description"]
+                del task_serializers.data[i]["reward_amount"]
+
+            return Response(
+                {
+                    "challenge": challenge_serializers.data,
+                    "tasks": task_serializers.data,
+                }
+            )
 
 
 ### TASK VERIFICATION ###
 
+
 class TaskVerificationView(ListCreateAPIView):
-  """
-  GET and POST all data from task verification table
-  """
-  queryset = TaskVerification.objects.all()
-  serializer_class = TaskVerificationSerializer
-  pagination_class = PageNumberPagination
+    """
+    GET and POST all data from task verification table
+    """
 
-  def create(self, request, *args, **kwargs):
-    """Override create method for creating new task verification item"""
-    task_id = Task.objects.get(id=request.data['task'])
-    task_id_serializer = TaskSerializer(task_id, many=False)
-    task_challenge_id = task_id_serializer.data['challenge']
+    queryset = TaskVerification.objects.all()
+    serializer_class = TaskVerificationSerializer
+    pagination_class = PageNumberPagination
 
-    serializer = TaskVerificationSerializer(data=request.data)
+    def create(self, request, *args, **kwargs):
+        """Override create method for creating new task verification item"""
+        task_id = Task.objects.get(id=request.data["task"])
+        task_id_serializer = TaskSerializer(task_id, many=False)
+        task_challenge_id = task_id_serializer.data["challenge"]
 
-    if (request.data['challenge'] == task_challenge_id) and serializer.is_valid():
-      serializer.save()
-      return Response(serializer.data, status=status.HTTP_201_CREATED)
+        serializer = TaskVerificationSerializer(data=request.data)
 
-    return Response({"detail": "the task does not match with the challenge"})
+        if (request.data["challenge"] == task_challenge_id) and serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+
+        return Response({"detail": "the task does not match with the challenge"})
+
 
 class VerifiedTaskVerificationView(ListAPIView):
-  """
-  GET all verified task
-  """
-  queryset = TaskVerification.objects.filter(is_verified=True)
-  serializer_class = TaskVerificationSerializer
-  pagination_class = PageNumberPagination
+    """
+    GET all verified task
+    """
+
+    queryset = TaskVerification.objects.filter(is_verified=True)
+    serializer_class = TaskVerificationSerializer
+    pagination_class = PageNumberPagination
+
 
 class UnverifiedTaskVerificationView(ListAPIView):
-  """
-  GET all unverified task
-  """
-  queryset = TaskVerification.objects.filter(is_verified=False)
-  serializer_class = TaskVerificationSerializer
-  pagination_class = PageNumberPagination
+    """
+    GET all unverified task
+    """
+
+    queryset = TaskVerification.objects.filter(is_verified=False)
+    serializer_class = TaskVerificationSerializer
+    pagination_class = PageNumberPagination
+
 
 ### USER CHALLENGE ###
 
+
 class UserChallengeIndividualView(RetrieveUpdateAPIView):
-  """
-  GET and PATCH invidual data from user challenge table by user id and challenge id
-  """
-  authentication_classes = [UserAuthentication]
-  permission_classes = [IsOwnerObjectPermission]
+    """
+    GET and PATCH invidual data from user challenge table by user id and challenge id
+    """
 
-  serializer_class = UserChallengeSerializer
-  pagination_class = PageNumberPagination
-  lookup_field = 'challenge_id'
+    authentication_classes = [UserAuthentication]
+    permission_classes = [IsOwnerObjectPermission]
 
-  def get_queryset(self):
-    uid = self.request.user[0].id
-    queryset = UserChallenge.objects.filter(user_id=uid)
-    return queryset
+    serializer_class = UserChallengeSerializer
+    pagination_class = PageNumberPagination
+    lookup_field = "challenge_id"
+
+    def get_queryset(self):
+        uid = self.request.user[0].id
+        queryset = UserChallenge.objects.filter(user_id=uid)
+        return queryset
+
 
 class UserChallengeListView(ListAPIView):
-  """
-  GET all challenge by user id
-  """
-  authentication_classes = [UserAuthentication]
-
-  # queryset = UserChallenge.objects.all()
-  serializer_class = UserChallengeSerializer
-  pagination_class = PageNumberPagination
-  # lookup_field = 'user_id'
-
-  def get_queryset(self):
-    """"
-    Override default queryset method on ListAPIView
+    """
+    GET all challenge by user id
     """
 
-    # Get uid from authentication method
-    uid = self.request.user[0].id
+    authentication_classes = [UserAuthentication]
 
-    query = UserChallenge.objects.filter(
-      user_id = uid
-    )
+    # queryset = UserChallenge.objects.all()
+    serializer_class = UserChallengeSerializer
+    pagination_class = PageNumberPagination
+    # lookup_field = 'user_id'
 
-    # Check if challenge exist
+    def get_queryset(self):
+        """ "
+        Override default queryset method on ListAPIView
+        """
 
-    obj = get_list_or_404(query)
-    return obj
+        # Get uid from authentication method
+        uid = self.request.user[0].id
+
+        query = UserChallenge.objects.filter(user_id=uid)
+
+        # Check if challenge exist
+
+        obj = get_list_or_404(query)
+        return obj
+
 
 class CreateUserChallengeView(CreateAPIView):
-  """
-  POST data to user challenge table
-  """
-  authentication_classes = [UserAuthentication]
-
-  queryset = UserChallenge.objects.all()
-  serializer_class = UserChallengeSerializer
-
-  def create(self, request, *args, **kwargs):
     """
-    Override create method to validate that only published challenge are allowed to be enrolled
+    POST data to user challenge table
     """
-    try:
-      data_serializer = self.get_serializer(data=request.data)
 
-      #check if request body contains invalid input
-      if data_serializer.is_valid(raise_exception=True):
-        challenge = Challenge.objects.get(id=data_serializer.validated_data.get('challenge').id)
-        if challenge.status == 'published':
-          self.perform_create(data_serializer)
-          headers = self.get_success_headers(data_serializer.data)
-          return Response(data_serializer.data, status=status.HTTP_201_CREATED, headers=headers)
-        else:
-          return Response({"detail": "challenge is not published"}, status=status.HTTP_400_BAD_REQUEST)
+    authentication_classes = [UserAuthentication]
 
-    except IntegrityError:
-      return Response({"detail": "user already enrolled in the challenge"}, status=status.HTTP_400_BAD_REQUEST)
+    queryset = UserChallenge.objects.all()
+    serializer_class = UserChallengeSerializer
 
-    except Exception as e:
-      return Response({"detail": "challenge enrollment failed"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+    def create(self, request, *args, **kwargs):
+        """
+        Override create method to validate that only published challenge are allowed to be enrolled
+        """
+        try:
+            data_serializer = self.get_serializer(data=request.data)
+
+            # check if request body contains invalid input
+            if data_serializer.is_valid(raise_exception=True):
+                challenge = Challenge.objects.get(
+                    id=data_serializer.validated_data.get("challenge").id
+                )
+                if challenge.status == "published":
+                    self.perform_create(data_serializer)
+                    headers = self.get_success_headers(data_serializer.data)
+                    return Response(
+                        data_serializer.data,
+                        status=status.HTTP_201_CREATED,
+                        headers=headers,
+                    )
+                else:
+                    return Response(
+                        {"detail": "challenge is not published"},
+                        status=status.HTTP_400_BAD_REQUEST,
+                    )
+
+        except IntegrityError:
+            return Response(
+                {"detail": "user already enrolled in the challenge"},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
+        except Exception as e:
+            return Response(
+                {"detail": "challenge enrollment failed"},
+                status=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            )
+
 
 ### USER TASK ###
 
+
 class UserTaskListView(ListAPIView):
-  """
-  GET all task by challenge id and user id
-  """
-  authentication_classes = [UserAuthentication]
-
-  serializer_class = UserTaskSerializer
-  pagination_class = PageNumberPagination
-
-  def get_queryset(self):
     """
-    Override default queryset method on ListAPIView
+    GET all task by challenge id and user id
     """
 
-    # Get uid from authentication method
-    uid = self.request.user[0].id
+    authentication_classes = [UserAuthentication]
 
-    query = UserTask.objects.filter(
-      user_id = uid,
-      task__challenge__id = self.kwargs['challenge_id']
-    )
+    serializer_class = UserTaskSerializer
+    pagination_class = PageNumberPagination
 
-    #Check if task in the challenge
+    def get_queryset(self):
+        """
+        Override default queryset method on ListAPIView
+        """
 
-    obj = get_list_or_404(query)
-    return obj
+        # Get uid from authentication method
+        uid = self.request.user[0].id
+
+        query = UserTask.objects.filter(
+            user_id=uid, task__challenge__id=self.kwargs["challenge_id"]
+        )
+
+        # Check if task in the challenge
+
+        obj = get_list_or_404(query)
+        return obj
+
 
 class UserTaskListCompletedView(ListAPIView):
-  """
-  GET all completed task by challenge id and user id
-  """
-  authentication_classes = [UserAuthentication]
-
-  serializer_class = UserTaskSerializer
-  pagination_class = PageNumberPagination
-
-  def get_queryset(self):
     """
-    Override default queryset method on ListAPIView
+    GET all completed task by challenge id and user id
     """
 
-    # Get uid from authentication method
-    uid = self.request.user[0].id
+    authentication_classes = [UserAuthentication]
 
-    query = UserTask.objects.filter(
-      user_id = uid,
-      status = 'completed',
-      task__challenge__id = self.kwargs['challenge_id']
-    )
+    serializer_class = UserTaskSerializer
+    pagination_class = PageNumberPagination
 
-    #Check if task in the challenge
+    def get_queryset(self):
+        """
+        Override default queryset method on ListAPIView
+        """
 
-    obj = get_list_or_404(query)
-    return obj
+        # Get uid from authentication method
+        uid = self.request.user[0].id
+
+        query = UserTask.objects.filter(
+            user_id=uid,
+            status="completed",
+            task__challenge__id=self.kwargs["challenge_id"],
+        )
+
+        # Check if task in the challenge
+
+        obj = get_list_or_404(query)
+        return obj
+
 
 class UserTaskListUncompletedView(ListAPIView):
-  """
-  GET all uncompleted tak by challenge id and user id
-  """
-  authentication_classes = [UserAuthentication]
-
-  serializer_class = UserTaskSerializer
-  pagination_class = PageNumberPagination
-
-  def get_queryset(self):
     """
-    Override default queryset method on ListAPIView
+    GET all uncompleted tak by challenge id and user id
     """
 
-    # Get uid from authentication method
-    uid = self.request.user[0].id
+    authentication_classes = [UserAuthentication]
 
-    query = UserTask.objects.filter(
-      user_id = uid,
-      status = 'uncompleted',
-      task__challenge__id = self.kwargs['challenge_id']
-    )
+    serializer_class = UserTaskSerializer
+    pagination_class = PageNumberPagination
 
-    #Check if task in the challenge
+    def get_queryset(self):
+        """
+        Override default queryset method on ListAPIView
+        """
 
-    obj = get_list_or_404(query)
-    return obj
+        # Get uid from authentication method
+        uid = self.request.user[0].id
+
+        query = UserTask.objects.filter(
+            user_id=uid,
+            status="uncompleted",
+            task__challenge__id=self.kwargs["challenge_id"],
+        )
+
+        # Check if task in the challenge
+
+        obj = get_list_or_404(query)
+        return obj
+
 
 class CreateUserTaskView(CreateAPIView):
-  """
-  POST data to user task table
-  """    
-  authentication_classes = [UserAuthentication]
+    """
+    POST data to user task table
+    """
 
-  queryset = UserTask.objects.all()
-  serializer_class = UserTaskSerializer
+    authentication_classes = [UserAuthentication]
 
-  def create(self, request, *args, **kwargs):
-    try:
-      data_serializer = self.get_serializer(data=request.data)
+    queryset = UserTask.objects.all()
+    serializer_class = UserTaskSerializer
 
-      #check if request body contains invalid input
-      if data_serializer.is_valid(raise_exception=True):
+    def create(self, request, *args, **kwargs):
+        try:
+            data_serializer = self.get_serializer(data=request.data)
 
-        task = Task.objects.get(id=data_serializer.validated_data.get('task').id)
-        challenge_id = task.challenge.id
+            # check if request body contains invalid input
+            if data_serializer.is_valid(raise_exception=True):
 
-        # check if user already enrolled in the challenge (if not raise an exception)
-        query = UserChallenge.objects.get(challenge=challenge_id, user=data_serializer.validated_data.get('user').id)
+                task = Task.objects.get(
+                    id=data_serializer.validated_data.get("task").id
+                )
+                challenge_id = task.challenge.id
 
-        self.perform_create(data_serializer)
-        headers = self.get_success_headers(data_serializer.data)
-        return Response(data_serializer.data, status=status.HTTP_201_CREATED, headers=headers)
-    
-    except ObjectDoesNotExist:
-      return Response({"detail": "user not enrolled in the challenge/task does not exist"}, status=status.HTTP_400_BAD_REQUEST)
-    
-    except IntegrityError:
-      return Response({"detail": "user already enrolled in the task"}, status=status.HTTP_400_BAD_REQUEST)
+                # check if user already enrolled in the challenge (if not raise an exception)
+                query = UserChallenge.objects.get(
+                    challenge=challenge_id,
+                    user=data_serializer.validated_data.get("user").id,
+                )
 
-    except Exception as e:
-      return Response({"detail": "task enrollment failed"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+                self.perform_create(data_serializer)
+                headers = self.get_success_headers(data_serializer.data)
+                return Response(
+                    data_serializer.data,
+                    status=status.HTTP_201_CREATED,
+                    headers=headers,
+                )
+
+        except ObjectDoesNotExist:
+            return Response(
+                {"detail": "user not enrolled in the challenge/task does not exist"},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
+        except IntegrityError:
+            return Response(
+                {"detail": "user already enrolled in the task"},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
+        except Exception as e:
+            return Response(
+                {"detail": "task enrollment failed"},
+                status=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            )
+
 
 class GenerateJWTMockup(APIView):
-  """
-  Mockup API to generate JWT token
-  """
-  def get(self, request, *args, **kwargs):
-    # Mockup query
-    query = User.objects.get(id=kwargs.get('user_id'))
-    serializer = UserSerializer(query, many=False)
+    """
+    Mockup API to generate JWT token
+    """
 
-    # JWT encode process
-    encoded_data, token = TokenHandler.token_encode(serializer.data, 24)
+    def get(self, request, *args, **kwargs):
+        # Mockup query
+        query = User.objects.get(id=kwargs.get("user_id"))
+        serializer = UserSerializer(query, many=False)
 
-    return Response({"data_from_query": encoded_data, "token": token}, status=status.HTTP_200_OK)
+        # JWT encode process
+        encoded_data, token = TokenHandler.token_encode(serializer.data, 24)
+
+        return Response(
+            {"data_from_query": encoded_data, "token": token}, status=status.HTTP_200_OK
+        )
+
 
 class TestJWTResponse(APIView):
-  """
-  Mockup API to test JWT token generated
-  """
-  authentication_classes = [UserAuthentication]
-  def get(self, request):
-    # if authorization header is specified and jwt token is valid
-    return Response({"message": "testing JWT success"})
+    """
+    Mockup API to test JWT token generated
+    """
+
+    authentication_classes = [UserAuthentication]
+
+    def get(self, request):
+        # if authorization header is specified and jwt token is valid
+        return Response({"message": "testing JWT success"})
+
 
 ### User Challenge Task
 class CustomPagination(PageNumberPagination):
-  page_size_query_param = 'page'
+    page_size_query_param = "page"
 
 
 class UserChallengeTaskView(APIView):
-  """
-  GET challenge and all of it's task based on uid and challenge id
-  """
-  # TODO: pagination
-  pagination_class = CustomPagination
-  
-  def get(self, request, *args, **kwargs):
-    # Get challenge
-    challenge_query = UserChallenge.objects.get(challenge_id=kwargs.get('challenge_id'), user_id=kwargs.get('user_id'))
-    challenge_serializer = UserChallengeSerializer(challenge_query)
+    """
+    GET challenge and all of it's task based on uid and challenge id
+    """
 
-    #Get task
-    task_query = UserTask.objects.filter(task__challenge__id = self.kwargs['challenge_id'], user_id=kwargs.get('user_id'))
-    task_serializer = UserTaskSerializer(task_query, many=True)
+    # TODO: pagination
+    pagination_class = CustomPagination
 
-    return Response({
-      "challenge": challenge_serializer.data,
-      "tasks": task_serializer.data
-    }, status=status.HTTP_200_OK)
+    def get(self, request, *args, **kwargs):
+        # Get challenge
+        challenge_query = UserChallenge.objects.get(
+            challenge_id=kwargs.get("challenge_id"), user_id=kwargs.get("user_id")
+        )
+        challenge_serializer = UserChallengeSerializer(challenge_query)
+
+        # Get task
+        task_query = UserTask.objects.filter(
+            task__challenge__id=self.kwargs["challenge_id"],
+            user_id=kwargs.get("user_id"),
+        )
+        task_serializer = UserTaskSerializer(task_query, many=True)
+
+        return Response(
+            {"challenge": challenge_serializer.data, "tasks": task_serializer.data},
+            status=status.HTTP_200_OK,
+        )
