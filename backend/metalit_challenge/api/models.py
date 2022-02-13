@@ -88,6 +88,7 @@ class TaskVerification(models.Model):
         on_delete=models.CASCADE,
     )
     task = models.ForeignKey("Task", on_delete=models.CASCADE)
+    user = models.ForeignKey("User", on_delete=models.CASCADE)
     submission = models.TextField(blank=True, null=True)
     is_verified = models.CharField(
         max_length=5, choices=Status.choices, default=Status.FALSE, null=False
